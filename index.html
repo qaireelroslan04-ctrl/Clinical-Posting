@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long Case Medical Companion</title>
+    <style>
+        /* --- RESET & BASE STYLES --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000; /* True Black for AMOLED */
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        /* --- HEADER --- */
+        header {
+            background-color: #000000;
+            color: #f8fafc;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1f2937;
+            z-index: 20;
+        }
+        .logo-area { display: flex; align-items: center; gap: 0.75rem; }
+        h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; color: #60a5fa; }
+        .badge { 
+            background: #1e3a8a; color: #93c5fd; border: 1px solid #2563eb;
+            font-size: 0.65rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; text-transform: uppercase; 
+        }
+
+        /* --- LAYOUT --- */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            width: 320px;
+            background: #050505;
+            border-right: 1px solid #1f2937;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+
+        .search-box {
+            padding: 1rem;
+            background: #050505;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            border-bottom: 1px solid #1f2937;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #171717;
+            border: 1px solid #404040;
+            color: #fff;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .search-input:focus { border-color: #3b82f6; }
+
+        .case-list { padding: 0.5rem; }
+        
+        .category-header {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            font-weight: 700;
+            padding: 1rem 0.5rem 0.5rem 0.5rem;
+            margin-top: 0.5rem;
+            border-bottom: 1px solid #1f2937;
+        }
+        .category-header:first-child { margin-top: 0; }
+
+        .case-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.85rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #cbd5e1;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            border-radius: 0.375rem;
+            margin-bottom: 2px;
+        }
+        .case-btn:hover { background-color: #1f2937; color: #fff; }
+        .case-btn.active {
+            background-color: #172554; /* Deep Blue */
+            color: #bfdbfe;
+            font-weight: 600;
+            border-left: 3px solid #3b82f6;
+        }
+
+        /* --- CONTENT AREA --- */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background-color: #000000;
+        }
+
+        .welcome-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .case-details { max-width: 950px; margin: 0 auto; display: none; }
+        .case-details.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+        .details-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 1rem;
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .category-tag { font-size: 0.75rem; color: #60a5fa; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        h2 { font-size: 2rem; color: #f8fafc; font-weight: 800; line-height: 1.1; margin-top: 0.25rem; }
+
+        .copy-btn {
+            padding: 0.5rem 1rem;
+            background: #171717; border: 1px solid #404040; border-radius: 0.375rem;
+            cursor: pointer; color: #cbd5e1; font-size: 0.85rem; font-weight: 600;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover { background: #262626; color: white; }
+
+        /* --- TABS --- */
+        .tabs {
+            display: flex;
+            background: #0a0a0a;
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            gap: 0.25rem;
+            border: 1px solid #1f2937;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.05); }
+        .tab-btn.active { background: #1f2937; color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        
+        .tab-btn.clerking.active { color: #6ee7b7; border-bottom: 2px solid #059669; }
+        .tab-btn.pearls.active { color: #c084fc; border-bottom: 2px solid #7c3aed; }
+
+        /* --- CONTENT CARD --- */
+        .content-card {
+            background: #0a0a0a;
+            border: 1px solid #1f2937;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            min-height: 400px;
+        }
+        .tab-content { display: none; line-height: 1.7; color: #cbd5e1; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s; }
+
+        /* --- TYPOGRAPHY --- */
+        h3 {
+            font-size: 1.1rem; color: #e2e8f0; margin: 1.75rem 0 1rem 0;
+            font-weight: 700; border-left: 4px solid #3b82f6; padding-left: 1rem;
+            background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, rgba(0,0,0,0) 100%);
+            padding-top: 0.25rem; padding-bottom: 0.25rem;
+        }
+        h3:first-child { margin-top: 0; }
+        ul { padding-left: 1.25rem; margin-bottom: 1.25rem; }
+        li { margin-bottom: 0.5rem; }
+        strong { color: #fff; font-weight: 700; }
+
+        /* --- SPECIAL BOXES (Dark Mode) --- */
+        .box { padding: 1.25rem; border-radius: 0.5rem; margin-bottom: 1.25rem; border-left: 4px solid; background: #111; }
+        
+        .box-red { background: rgba(127, 29, 29, 0.15); border-color: #ef4444; color: #fca5a5; }
+        .box-green { background: rgba(6, 78, 59, 0.15); border-color: #10b981; color: #6ee7b7; }
+        .box-blue { background: rgba(30, 58, 138, 0.15); border-color: #3b82f6; color: #93c5fd; }
+        .box-purple { background: rgba(88, 28, 135, 0.15); border-color: #a855f7; color: #e9d5ff; }
+        
+        .box-title { display: block; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.05em; opacity: 0.8; }
+
+        /* Pearl Box Specifics */
+        .pearl-box {
+            background-color: #171717;
+            border: 1px solid #312e81;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .pearl-title {
+            color: #818cf8;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        /* --- MOBILE --- */
+        .menu-toggle {
+            display: none; position: absolute; top: 1rem; left: 1rem;
+            background: #171717; color: white; border: 1px solid #333; padding: 0.5rem;
+            border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 30;
+        }
+
+        @media (max-width: 768px) {
+            aside { position: absolute; height: 100%; transform: translateX(-100%); width: 85%; box-shadow: 4px 0 15px rgba(0,0,0,0.8); background: #000000; }
+            aside.open { transform: translateX(0); }
+            .menu-toggle { display: block; }
+            main { padding: 4rem 1rem 1rem 1rem; }
+            h2 { font-size: 1.5rem; }
+            .tabs { margin-bottom: 1rem; }
+            .tab-btn { font-size: 0.75rem; padding: 0.6rem 0.4rem; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span style="font-size: 1.5rem;">🌑</span>
+            <h1>Long Case Companion</h1>
+            <span class="badge">Midnight</span>
+        </div>
+        <button class="copy-btn" onclick="document.getElementById('infoModal').style.display='flex'">About</button>
+    </header>
+
+    <div class="main-container">
+        
+        <aside id="sidebar">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search conditions...">
+            </div>
+            <div id="caseList" class="case-list"></div>
+        </aside>
+
+        <main>
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+            <div id="welcomeState" class="welcome-state">
+                <div style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.5;">🩻</div>
+                <h2>Clinical Clerkship Companion</h2>
+                <p>Select a disease from the sidebar to view detailed protocols.</p>
+            </div>
+
+            <div id="caseDetails" class="case-details">
+                <div class="details-header">
+                    <div>
+                        <div id="categoryTag" class="category-tag">Category</div>
+                        <h2 id="caseTitle">Condition Name</h2>
+                    </div>
+                    <button class="copy-btn" onclick="copyContent()">Copy Data</button>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active clerking" onclick="switchTab('clerking', this)">📝 Clerking</button>
+                    <button class="tab-btn" onclick="switchTab('history', this)">History</button>
+                    <button class="tab-btn" onclick="switchTab('exam', this)">Examination</button>
+                    <button class="tab-btn" onclick="switchTab('inv', this)">Investigations</button>
+                    <button class="tab-btn" onclick="switchTab('mgmt', this)">Management</button>
+                    <button class="tab-btn pearls" onclick="switchTab('pearls', this)">💎 Pearls</button>
+                </div>
+
+                <div class="content-card">
+                    <div id="tab-clerking" class="tab-content active"></div>
+                    <div id="tab-history" class="tab-content"></div>
+                    <div id="tab-exam" class="tab-content"></div>
+                    <div id="tab-inv" class="tab-content"></div>
+                    <div id="tab-mgmt" class="tab-content"></div>
+                    <div id="tab-pearls" class="tab-content"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="infoModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:100; justify-content:center; align-items:center;">
+        <div style="background:#171717; padding:2rem; border-radius:1rem; max-width:500px; width:90%; border: 1px solid #333;">
+            <h3 style="margin-top:0;">About This App</h3>
+            <p style="margin:1rem 0; color: #cbd5e1;">Contains all 23 requested conditions with enriched surgical data. True black theme for AMOLED devices.</p>
+            <button onclick="document.getElementById('infoModal').style.display='none'" class="copy-btn" style="width:100%">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- COMPLETE MEDICAL DATA (23 Items) ---
+        const medicalData = [
+            // === HEPATOBILIARY (7 Conditions) ===
+            {
+                id: "cholecystitis", category: "Hepatobiliary", name: "Acute Cholecystitis",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the pain radiate to your right shoulder/back?" (Boas Sign)</li><li>"Did this start after a fatty meal?"</li><li>"How long has the pain lasted? >6 hours?"</li><li>"Have you had fevers or shivers?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Biliary Colic:</strong> Pain <6h, No fever, Normal WBC.</li><li><strong>Peptic Ulcer:</strong> Burning epigastric pain, association with hunger/food.</li><li><strong>Right Lower Lobe Pneumonia:</strong> Respiratory symptoms, fever.</li></ul></div>`,
+                history: `<h3>History of Presenting Illness</h3>Constant, severe RUQ pain >6 hours. Radiation to R scapula. <br><strong>Associated:</strong> Nausea, vomiting, fever, chills. <br><strong>Risk Factors (5 F's):</strong> Fat, Female, Forty, Fertile, Fair.`,
+                exam: `<h3>Signs</h3>Tachycardia, Low grade fever. <br><strong>Murphy's Sign:</strong> Inspiratory arrest on deep palpation of RUQ. <br><strong>Negative Findings:</strong> No jaundice (unless Mirizzi/CBD stone), No peritonitis (unless perforated).`,
+                inv: `<h3>Bedside</h3>Urine Dip. ECG. <br><h3>Labs</h3>FBC (Leukocytosis), CRP (Elevated), LFTs (Normal). <br><h3>Imaging</h3><strong>USG Abdomen (Gold Standard):</strong> Thickened GB wall >3mm, Pericholecystic fluid, Stones, Sonographic Murphy's.`,
+                mgmt: `<h3>Resuscitation</h3>NBM, IV Fluids, Analgesia. <br><h3>Medical</h3>IV Antibiotics (Cefuroxime + Metronidazole). <br><h3>Surgical</h3><strong>Early Laparoscopic Cholecystectomy</strong> (<72h). <br><h3>Interventional</h3>Percutaneous Cholecystostomy (Drainage) for high-risk (Tokyo Grade III).`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Tokyo Guidelines 2018</div>Grade I (Mild) -> Lap Chole. Grade II (Moderate) -> Abx then Surgery. Grade III (Severe) -> Drainage.</div>`
+            },
+            {
+                id: "gallstones", category: "Hepatobiliary", name: "Gallstones (Biliary Colic)",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the pain come and go?"</li><li>"Does it go away <em>completely</em> between attacks?"</li><li>"Is your urine dark or eyes yellow?" (Rule out CBD stone)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Acute Cholecystitis:</strong> Fever, pain >6h.</li><li><strong>Gastritis:</strong> Burning pain.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Colicky RUQ/Epigastric pain, post-prandial (fatty food). Lasts <6 hours. No fever.`,
+                exam: `<h3>Signs</h3>Abdomen soft/non-tender between attacks. Negative Murphy's.`,
+                inv: `<h3>Labs</h3>Normal WBC, CRP, LFTs. <br><h3>Imaging</h3><strong>USG Abdomen:</strong> Stones with acoustic shadowing. Thin GB wall (<3mm).`,
+                mgmt: `<h3>Conservative</h3>Analgesia (NSAIDs > Opioids), Low fat diet. <br><h3>Surgical</h3>Elective Laparoscopic Cholecystectomy.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Saint's Triad</div>Gallstones + Diverticulosis + Hiatus Hernia.</div>`
+            },
+            {
+                id: "pancreatitis", category: "Hepatobiliary", name: "Acute Pancreatitis",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the pain go straight through to your back?"</li><li>"Does sitting forward help?"</li><li>"Do you drink alcohol? History of stones?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Perforated PUD:</strong> Air under diaphragm.</li><li><strong>MI:</strong> ECG changes.</li><li><strong>Ruptured AAA:</strong> Shock, Pulsatile mass.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Sudden severe epigastric pain radiating to back. Nausea/Vomiting. <br><strong>Causes (GET SMASHED):</strong> Gallstones (50%), Alcohol (30%), Trauma, Steroids, Mumps, Autoimmune, Scorpion, Hypercalcemia, ERCP, Drugs.`,
+                exam: `<h3>Signs</h3>Epigastric tenderness. Dehydration. <br><strong>Red Flags:</strong> Cullen's (umbilicus) or Grey Turner's (flank) bruising = Hemorrhagic.`,
+                inv: `<h3>Labs</h3><strong>Amylase/Lipase:</strong> >3x Upper Limit Normal. ABG (Lactate/Hypoxia). Calcium. <br><h3>Imaging</h3>USG (stones). <strong>CT Pancreas:</strong> After 48h for necrosis.`,
+                mgmt: `<h3>Supportive</h3>Aggressive IV Fluids (Hartmann's), Analgesia (Opioids). Early enteral nutrition. <br><h3>Specific</h3>ERCP (if cholangitis). Cholecystectomy (same admission).`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Glasgow Imrie Score</div>PANCREAS mnemonic. Score ≥3 = Severe.</div>`
+            },
+            {
+                id: "head_pancreas", category: "Hepatobiliary", name: "Ca Head of Pancreas",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Painless yellow skin?"</li><li>"Dark urine, pale stool?"</li><li>"Itchy skin?"</li><li>"Weight loss?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Choledocholithiasis:</strong> Painful jaundice.</li><li><strong>Cholangiocarcinoma:</strong> Similar presentation.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Painless progressive obstructive jaundice. Pruritus. Weight loss. Back pain (late).`,
+                exam: `<h3>Signs</h3>Jaundice. Scratch marks. Cachexia. <br><strong>Courvoisier's Sign:</strong> Palpable non-tender GB + Jaundice = Malignancy.`,
+                inv: `<h3>Labs</h3>Cholestatic LFTs. CA 19-9. High INR. <br><h3>Imaging</h3><strong>CT Pancreas:</strong> "Double duct sign". Staging.`,
+                mgmt: `<h3>Curative</h3>Whipple's Procedure (Pancreaticoduodenectomy). <br><h3>Palliative</h3>ERCP Stenting. Creon. Pain control.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Trousseau's Sign</div>Migratory thrombophlebitis associated with visceral cancer.</div>`
+            },
+            {
+                id: "hcc", category: "Hepatobiliary", name: "Hepatocellular Carcinoma",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"History of Hep B/C?"</li><li>"Alcohol intake?"</li><li>"Sudden belly swelling?" (Decompensation)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Liver Mets:</strong> More common.</li><li><strong>Cirrhosis:</strong> Without tumor.</li></ul></div>`,
+                history: `<h3>HOPI</h3>RUQ pain, weight loss, decompensation (ascites). <br><strong>Risks:</strong> Cirrhosis, Hepatitis B/C, Aflatoxin.`,
+                exam: `<h3>Signs</h3>Hepatomegaly (hard/craggy). Stigmata of CLD. Ascites.`,
+                inv: `<h3>Labs</h3>AFP >400. <br><h3>Imaging</h3>Multiphasic CT/MRI (Arterial enhancement + Venous washout).`,
+                mgmt: `<h3>Curative</h3>Resection (non-cirrhotic), Transplant (Milan criteria). <br><h3>Palliative</h3>TACE, Sorafenib.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Child-Pugh Score</div>Prognostic tool for cirrhosis. Determines surgical fitness.</div>`
+            },
+            {
+                id: "cholangio", category: "Hepatobiliary", name: "Cholangiocarcinoma",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Are you jaundiced?"</li><li>"History of UC?" (PSC link)</li><li>"History of liver flukes?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Pancreatic Ca:</strong> Similar presentation.</li><li><strong>CBD Stone:</strong> Painful.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Obstructive jaundice, itching, weight loss. <br><strong>Risks:</strong> PSC, Choledochal cysts, Clonorchis sinensis.`,
+                exam: `<h3>Signs</h3>Jaundice, Hepatomegaly. GB palpable only if distal tumor.`,
+                inv: `<h3>Imaging</h3>MRCP (Gold standard). ERCP. CA 19-9.`,
+                mgmt: `<h3>Surgery</h3>Distal: Whipple's. Hilar: Hepatectomy. <br><h3>Palliation</h3>Stenting.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Klatskin Tumor</div>Perihilar tumor. Jaundice + Collapsed GB.</div>`
+            },
+            {
+                id: "gb_ca", category: "Hepatobiliary", name: "Gallbladder Carcinoma",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Long history of gallstones?"</li><li>"Constant pain + weight loss?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Chronic Cholecystitis</strong>.</li><li><strong>Xanthogranulomatous Cholecystitis</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Often incidental. Advanced: Chronic pain, weight loss. <br><strong>Risks:</strong> Porcelain GB, Stones >3cm, Salmonella carrier.`,
+                exam: `<h3>Signs</h3>Hard RUQ Mass. Jaundice (late).`,
+                inv: `<h3>Imaging</h3>CT/MRI showing mass replacing GB.`,
+                mgmt: `<h3>Surgery</h3>T1a: Simple Cholecystectomy. >T1b: Extended Cholecystectomy (liver bed + nodes).`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Porcelain Gallbladder</div>Calcified GB wall. Indication for surgery due to cancer risk.</div>`
+            },
+
+            // === UPPER GI (4 Conditions) ===
+            {
+                id: "ugib", category: "Upper GI", name: "Upper GI Bleeding",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Vomit: Bright red or coffee grounds?"</li><li>"Stool: Black/Tarry?"</li><li>"Liver disease/Alcohol?"</li><li>"NSAIDs/Blood thinners?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Peptic Ulcer:</strong> 50% cases.</li><li><strong>Varices:</strong> Liver signs.</li><li><strong>Mallory-Weiss:</strong> Retching.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Hematemesis/Melaena. Syncope. <br><strong>Causes:</strong> PUD, Varices, Mallory-Weiss, Cancer.`,
+                exam: `<h3>Signs</h3>Shock. Liver Stigmata. PR Exam mandatory.`,
+                inv: `<h3>Labs</h3>Hb (lag), Urea (High). Crossmatch. <br><h3>Scope</h3>OGDS within 24h.`,
+                mgmt: `<h3>Resus</h3>2 Large IVs, Fluids/Blood. <br><h3>Meds</h3>IV PPI. Terlipressin (Varices). <br><h3>Scope</h3>Clips/Banding.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Scores</div>Glasgow-Blatchford (Pre-scope admission). Rockall (Post-scope mortality). Forrest (Rebleed risk).</div>`
+            },
+            {
+                id: "pud", category: "Upper GI", name: "Peptic Ulcer Disease",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Pain relation to food?"</li><li>"Night pain?"</li><li>"NSAID use?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Non-Ulcer Dyspepsia</strong>.</li><li><strong>Gastric Cancer</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Epigastric burning. <strong>Duodenal:</strong> Relieved by food. <strong>Gastric:</strong> Worse with food.`,
+                exam: `<h3>Signs</h3>Epigastric tenderness.`,
+                inv: `<h3>Diagnosis</h3>OGDS. H. pylori test.`,
+                mgmt: `<h3>Medical</h3>PPI. H. pylori eradication (Triple therapy). Stop NSAIDs.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Zollinger-Ellison</div>Gastrinoma causing refractory ulcers.</div>`
+            },
+            {
+                id: "perf_pud", category: "Upper GI", name: "Perforated PUD",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Sudden thunderclap pain?"</li><li>"History of ulcers?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Pancreatitis</strong>.</li><li><strong>AAA</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Sudden generalized pain. <br><strong>Triad:</strong> Pain, Tachycardia, Rigidity.`,
+                exam: `<h3>Signs</h3>Peritonitis (Board-like rigidity). Absent bowel sounds.`,
+                inv: `<h3>Imaging</h3>Erect CXR (Pneumoperitoneum). CT Abdomen.`,
+                mgmt: `<h3>Resus</h3>IV Fluids, Abx, NBM, NG. <br><h3>Surgery</h3>Graham Patch Repair.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Valentino's Syndrome</div>Gastric contents tracking to RIF mimicking appendicitis.</div>`
+            },
+            {
+                id: "eso_gastric_ca", category: "Upper GI", name: "Esophageal & Gastric Ca",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Dysphagia (solids then liquids)?"</li><li>"Weight loss?"</li><li>"Reflux history?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Achalasia</strong>.</li><li><strong>Stricture</strong>.</li><li><strong>Pouch</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Dysphagia, weight loss, vomiting. <br><strong>Risks:</strong> Smoking, Alcohol, GERD.`,
+                exam: `<h3>Signs</h3>Cachexia, Virchow's Node.`,
+                inv: `<h3>Diagnosis</h3>OGDS + Biopsy. <br><h3>Staging</h3>CT TAP, EUS.`,
+                mgmt: `<h3>Surgery</h3>Esophagectomy / Gastrectomy. <br><h3>Adjuvant</h3>Chemo/Radio.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Barrett's Esophagus</div>Metaplasia predisposing to Adenocarcinoma.</div>`
+            },
+
+            // === LOWER GI (5 Conditions) ===
+            {
+                id: "appendicitis", category: "Lower GI", name: "Acute Appendicitis",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Did pain move to right side?"</li><li>"Pain on bumps?"</li><li>"Hungry?" (No)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Mesenteric Adenitis</strong>.</li><li><strong>Ectopic Pregnancy</strong>.</li><li><strong>Ureteric Colic</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Central -> RIF pain. Anorexia, Nausea.`,
+                exam: `<h3>Signs</h3>McBurney's tenderness. Rovsing's, Psoas, Obturator.`,
+                inv: `<h3>Labs</h3>WBC >10, CRP. U-HCG. <br><h3>Imaging</h3>USG/CT.`,
+                mgmt: `<h3>Surgery</h3>Laparoscopic Appendectomy.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Alvarado Score</div>Stratifies risk. >7 = Surgery.</div>`
+            },
+            {
+                id: "obstruction", category: "Lower GI", name: "Intestinal Obstruction",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Passed gas/stool?"</li><li>"Vomiting color?"</li><li>"Previous surgery?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Ileus</strong>.</li><li><strong>Gastroenteritis</strong>.</li></ul></div>`,
+                history: `<h3>Tetrad</h3>Colic, Vomiting, Distension, Obstipation. <br><strong>Causes:</strong> Adhesions (SBO), Cancer (LBO), Hernias.`,
+                exam: `<h3>Signs</h3>Distension, Tinkling BS. Check Hernias!`,
+                inv: `<h3>Imaging</h3>AXR (Loops). CT Abdomen (Transition point).`,
+                mgmt: `<h3>Conservative</h3>Drip & Suck. <br><h3>Surgery</h3>If strangulated/virgin abdomen.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Rule of 3-6-9</div>Max diameters on AXR.</div>`
+            },
+            {
+                id: "colorectal", category: "Lower GI", name: "Colorectal Carcinoma",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Change in bowel habit?"</li><li>"Blood in stool?"</li><li>"Incomplete emptying?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Diverticular</strong>.</li><li><strong>IBD</strong>.</li><li><strong>Hemorrhoids</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Right: Anemia/Mass. Left: Obstruction/Bleeding.`,
+                exam: `<h3>Signs</h3>Mass, Pallor. DRE mandatory.`,
+                inv: `<h3>Diagnosis</h3>Colonoscopy. <br><h3>Staging</h3>CT TAP + MRI Pelvis.`,
+                mgmt: `<h3>Surgery</h3>Resection. <br><h3>Adjuvant</h3>Chemo.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Lynch Syndrome</div>3-2-1 Rule.</div>`
+            },
+            {
+                id: "diverticular", category: "Lower GI", name: "Diverticular Disease",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"LIF pain?"</li><li>"History of diverticulosis?"</li><li>"Fever?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Cancer</strong>.</li><li><strong>IBD</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>LIF pain, fever, altered habit.`,
+                exam: `<h3>Signs</h3>LIF tenderness.`,
+                inv: `<h3>Imaging</h3>CT Abdomen. (No scope in acute phase).`,
+                mgmt: `<h3>Uncomplicated</h3>Abx. <br><h3>Complicated</h3>Drainage/Hartmann's.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Hinchey Classification</div>Grades severity I-IV.</div>`
+            },
+            {
+                id: "lgib", category: "Lower GI", name: "Lower GI Bleeding",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Bright red or dark?"</li><li>"Mixed or separate?"</li><li>"Painful?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Diverticulosis</strong>.</li><li><strong>Hemorrhoids</strong>.</li><li><strong>Angiodysplasia</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Hematochezia.`,
+                exam: `<h3>Signs</h3>DRE. Hemodynamics.`,
+                inv: `<h3>Procedures</h3>Colonoscopy vs CT Angio.`,
+                mgmt: `<h3>Conservative</h3>Resus. Stop anticoagulants. <br><h3>Intervention</h3>Embolization/Surgery.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Heyde's Syndrome</div>AS + Angiodysplasia.</div>`
+            },
+
+            // === UROLOGY (4 Conditions) ===
+            {
+                id: "stones", category: "Urology", name: "Renal Stones",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Loin to groin pain?"</li><li>"Restless?"</li><li>"Hematuria?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Appendicitis</strong>.</li><li><strong>AAA</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Colic. Vomiting.`,
+                exam: `<h3>Signs</h3>Renal angle tenderness.`,
+                inv: `<h3>Gold Standard</h3>CT KUB.`,
+                mgmt: `<h3>Acute</h3>NSAIDs. <br><h3>Definitive</h3>ESWL, URS, PCNL.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Staghorn</div>Struvite stones (infection).</div>`
+            },
+            {
+                id: "bph", category: "Urology", name: "BPH",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Hesitancy?"</li><li>"Nocturia?"</li><li>"Poor stream?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Cancer</strong>.</li><li><strong>Stricture</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>LUTS (Voiding/Storage).`,
+                exam: `<h3>DRE</h3>Smooth enlarged prostate.`,
+                inv: `<h3>Tests</h3>PSA, Uroflowmetry.`,
+                mgmt: `<h3>Meds</h3>Alpha-blockers, 5-ARI. <br><h3>Surgery</h3>TURP.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 PSA Density</div>Distinguishes BPH vs CA.</div>`
+            },
+            {
+                id: "prostate_ca", category: "Urology", name: "Prostate Cancer",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Family history?"</li><li>"Back pain?"</li><li>"Blood in semen?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>BPH</strong>.</li><li><strong>Prostatitis</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Asymptomatic/LUTS/Bone pain.`,
+                exam: `<h3>DRE</h3>Hard craggy nodule.`,
+                inv: `<h3>Diagnosis</h3>MRI -> Biopsy. Bone Scan.`,
+                mgmt: `<h3>Local</h3>Surgery/Radio. <br><h3>Mets</h3>ADT.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Gleason</div>Grading system.</div>`
+            },
+            {
+                id: "bladder_ca", category: "Urology", name: "Bladder Cancer",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Painless hematuria?"</li><li>"Smoker?"</li><li>"Chemical worker?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>UTI</strong>.</li><li><strong>Stone</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Painless gross hematuria.`,
+                inv: `<h3>Diagnosis</h3>Cystoscopy. CT Urogram.`,
+                mgmt: `<h3>Superficial</h3>TURBT + BCG. <br><h3>Invasive</h3>Cystectomy.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Schistosomiasis</div>Squamous cell CA link.</div>`
+            },
+
+            // === GENERAL / ENDOCRINE (3 Conditions) ===
+            {
+                id: "hernia", category: "General", name: "Groin Hernias",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Reducible?"</li><li>"Painful/Stuck?"</li><li>"Heavy lifting?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Hydrocele</strong>.</li><li><strong>Lymph Node</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Lump, cough impulse.`,
+                exam: `<h3>Signs</h3>Deep ring test.`,
+                inv: `<h3>Diagnosis</h3>Clinical. USG if unsure.`,
+                mgmt: `<h3>Surgery</h3>Hernioplasty (Lichtenstein/Lap).`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Richter's</div>Partial bowel herniation.</div>`
+            },
+            {
+                id: "breast", category: "General", name: "Breast Cancer",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Lump growing?"</li><li>"Nipple discharge?"</li><li>"Family history?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Fibroadenoma</strong>.</li><li><strong>Cyst</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Painless hard lump.`,
+                exam: `<h3>Signs</h3>Hard irregular mass. Peau d'orange.`,
+                inv: `<h3>Triple Assessment</h3>Exam + Imaging + Biopsy.`,
+                mgmt: `<h3>Surgery</h3>WLE/Mastectomy. <br><h3>Systemic</h3>Chemo/Endocrine.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Paget's</div>Nipple eczema = Cancer.</div>`
+            },
+            {
+                id: "thyroid", category: "Endocrine", name: "Thyroid Disease",
+                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Moves with swallow?"</li><li>"Hot/Cold pref?"</li><li>"Voice change?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>MNG</strong>.</li><li><strong>Graves</strong>.</li></ul></div>`,
+                history: `<h3>HOPI</h3>Goiter. Hyper vs Hypo.`,
+                exam: `<h3>Signs</h3>Tremor, Pulse, Eyes.`,
+                inv: `<h3>Labs</h3>TFTs. USG. FNAC.`,
+                mgmt: `<h3>Medical</h3>Carbimazole/Thyroxine. <br><h3>Surgery</h3>Thyroidectomy.`,
+                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Papillary CA</div>Orphan Annie eyes.</div>`
+            }
+        ];
+
+        // --- APP LOGIC ---
+
+        const caseListEl = document.getElementById('caseList');
+        const searchInput = document.getElementById('searchInput');
+        const welcomeState = document.getElementById('welcomeState');
+        const caseDetails = document.getElementById('caseDetails');
+        const sidebar = document.getElementById('sidebar');
+
+        function renderList(filter = '') {
+            caseListEl.innerHTML = '';
+            
+            // Get unique categories
+            const categories = [...new Set(medicalData.map(item => item.category))];
+            
+            let foundAny = false;
+
+            categories.forEach(cat => {
+                const itemsInCat = medicalData.filter(item => 
+                    item.category === cat && 
+                    item.name.toLowerCase().includes(filter.toLowerCase())
+                );
+
+                if (itemsInCat.length > 0) {
+                    foundAny = true;
+                    const header = document.createElement('div');
+                    header.className = 'category-header';
+                    header.innerText = cat;
+                    caseListEl.appendChild(header);
+
+                    itemsInCat.forEach(item => {
+                        const btn = document.createElement('button');
+                        btn.className = 'case-btn';
+                        btn.onclick = () => selectCase(item.id, btn);
+                        btn.innerHTML = item.name;
+                        caseListEl.appendChild(btn);
+                    });
+                }
+            });
+
+            if (!foundAny) {
+                caseListEl.innerHTML = '<div style="padding:1rem; text-align:center; color:#94a3b8; font-size:0.9rem;">No matches found</div>';
+            }
+        }
+
+        function selectCase(id, btnElement) {
+            document.querySelectorAll('.case-btn').forEach(b => b.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+
+            const data = medicalData.find(d => d.id === id);
+            
+            document.getElementById('categoryTag').innerText = data.category;
+            document.getElementById('caseTitle').innerText = data.name;
+            
+            const sections = ['clerking', 'history', 'exam', 'inv', 'mgmt', 'pearls'];
+            sections.forEach(sec => {
+                document.getElementById(`tab-${sec}`).innerHTML = data[sec] || '<div class="box box-blue">Data coming soon...</div>';
+            });
+
+            welcomeState.style.display = 'none';
+            caseDetails.classList.add('active');
+            
+            // Default to Clerking tab
+            const clerkTabBtn = document.querySelector('.tab-btn.clerking');
+            if(clerkTabBtn) switchTab('clerking', clerkTabBtn);
+
+            if(window.innerWidth <= 768) toggleSidebar();
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        function toggleSidebar() { sidebar.classList.toggle('open'); }
+
+        function copyContent() {
+            const title = document.getElementById('caseTitle').innerText;
+            const strip = (html) => {
+                let tmp = document.createElement("DIV");
+                tmp.innerHTML = html;
+                return tmp.innerText;
+            };
+
+            const sections = ['clerking', 'history', 'exam', 'inv', 'mgmt', 'pearls'];
+            let text = `CONDITION: ${title}\n\n`;
+            
+            sections.forEach(sec => {
+                const content = document.getElementById(`tab-${sec}`).innerHTML;
+                if(content) text += `[${sec.toUpperCase()}]\n${strip(content)}\n\n`;
+            });
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const orig = btn.innerText;
+                btn.innerText = "Copied!";
+                setTimeout(() => btn.innerText = "Copy Data", 2000);
+            });
+        }
+
+        // Init
+        searchInput.addEventListener('input', (e) => renderList(e.target.value));
+        renderList();
+
+    </script>
+</body>
+</html>
