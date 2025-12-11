@@ -1,520 +1,385 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clinical Clerkship Companion</title>
+    <title>Long Case Medical Companion</title>
     <style>
-        /* --- 1. THEME ENGINE (Midnight & Clinical Blue) --- */
+        /* --- CSS VARIABLES --- */
         :root {
-            /* LIGHT MODE (Clinical) */
-            --bg-app: #ffffff;
-            --bg-sidebar: #f2f2f7; /* Apple System Gray 6 */
+            --bg-body: #000000;
+            --bg-sidebar: #050505;
+            --bg-card: #0a0a0a;
+            --bg-box: #111111;
+            --bg-input: #171717;
+            --border-color: #1f2937;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent-color: #3b82f6;
+            --accent-bg: #172554;
+            --accent-text: #bfdbfe;
+            --header-bg: rgba(0, 0, 0, 0.85);
+            
+            /* Special Box Colors */
+            --box-green-bg: rgba(6, 78, 59, 0.25); --box-green-border: #059669; --box-green-text: #a7f3d0;
+            --box-blue-bg: rgba(30, 58, 138, 0.25); --box-blue-border: #2563eb; --box-blue-text: #bfdbfe;
+            --box-red-bg: rgba(127, 29, 29, 0.25); --box-red-border: #dc2626; --box-red-text: #fecaca;
+            --box-purple-bg: rgba(88, 28, 135, 0.25); --box-purple-border: #9333ea; --box-purple-text: #e9d5ff;
+            --box-yellow-bg: rgba(120, 53, 15, 0.25); --box-yellow-border: #d97706; --box-yellow-text: #fde68a;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f8fafc;
+            --bg-sidebar: #ffffff;
             --bg-card: #ffffff;
-            --bg-header: rgba(255, 255, 255, 0.85);
-            
-            --text-primary: #000000;
-            --text-secondary: #6e6e73; /* Apple System Gray */
-            --text-tertiary: #aeaeb2;
-            
-            --accent: #007aff; /* Apple System Blue */
-            --accent-soft: rgba(0, 122, 255, 0.1);
-            
-            --border: #e5e5ea; /* Apple System Gray 5 */
-            --separator: #c6c6c8;
-            
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            
-            /* Special Box Colors (Light) */
-            --box-green-bg: #e6f8ef; --box-green-border: #34c759; --box-green-text: #0b4f1f;
-            --box-blue-bg: #eaf2ff; --box-blue-border: #007aff; --box-blue-text: #003670;
-            --box-red-bg: #fff0f0; --box-red-border: #ff3b30; --box-red-text: #780a05;
-            --box-yellow-bg: #fff8e6; --box-yellow-border: #ffcc00; --box-yellow-text: #664d00;
+            --bg-box: #f1f5f9;
+            --bg-input: #f1f5f9;
+            --border-color: #e2e8f0;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --accent-color: #2563eb;
+            --accent-bg: #eff6ff;
+            --accent-text: #1e40af;
+            --header-bg: rgba(255, 255, 255, 0.9);
+
+            --box-green-bg: #ecfdf5; --box-green-border: #10b981; --box-green-text: #065f46;
+            --box-blue-bg: #eff6ff; --box-blue-border: #3b82f6; --box-blue-text: #1e40af;
+            --box-red-bg: #fef2f2; --box-red-border: #ef4444; --box-red-text: #991b1b;
+            --box-purple-bg: #f5f3ff; --box-purple-border: #8b5cf6; --box-purple-text: #5b21b6;
+            --box-yellow-bg: #fffbeb; --box-yellow-border: #d97706; --box-yellow-text: #92400e;
         }
 
-        [data-theme="dark"] {
-            /* DARK MODE (Midnight) */
-            --bg-app: #000000;
-            --bg-sidebar: #000000;
-            --bg-card: #1c1c1e; /* Apple System Gray 6 Dark */
-            --bg-header: rgba(28, 28, 30, 0.85);
-            
-            --text-primary: #ffffff;
-            --text-secondary: #98989d;
-            --text-tertiary: #636366;
-            
-            --accent: #0a84ff; /* Apple Dark Mode Blue */
-            --accent-soft: rgba(10, 132, 255, 0.15);
-            
-            --border: #2c2c2e;
-            --separator: #3a3a3c;
-            
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-
-            /* Special Box Colors (Midnight) */
-            --box-green-bg: rgba(48, 209, 88, 0.1); --box-green-border: #30d158; --box-green-text: #30d158;
-            --box-blue-bg: rgba(10, 132, 255, 0.1); --box-blue-border: #0a84ff; --box-blue-text: #64d2ff;
-            --box-red-bg: rgba(255, 69, 58, 0.1); --box-red-border: #ff453a; --box-red-text: #ff453a;
-            --box-yellow-bg: rgba(255, 214, 10, 0.1); --box-yellow-border: #ffd60a; --box-yellow-text: #ffd60a;
-            --box-purple-bg: rgba(191, 90, 242, 0.1); --box-purple-border: #bf5af2; --box-purple-text: #bf5af2;
-        }
-
-        /* --- 2. RESET & TYPOGRAPHY --- */
+        /* --- RESET & BASE --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-app);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
         }
 
-        /* --- 3. GLOBAL HEADER --- */
-        .app-header {
-            height: 52px;
-            background-color: var(--bg-header);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+        /* --- HEADER --- */
+        header {
+            background-color: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0.75rem 1.5rem;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 0 1rem;
-            z-index: 100;
-            position: relative;
-        }
-
-        .header-left, .header-right {
-            flex: 1;
-            display: flex;
             align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 50;
         }
-        .header-right { justify-content: flex-end; }
-        
-        .header-title {
-            flex: 2;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1rem;
-            letter-spacing: -0.01em;
-            color: var(--text-primary);
+        .logo-area { display: flex; align-items: center; gap: 0.75rem; }
+        h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; color: var(--accent-color); }
+        .badge { 
+            background: var(--accent-bg); color: var(--accent-text); border: 1px solid var(--accent-color);
+            font-size: 0.65rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; text-transform: uppercase; 
         }
 
-        .icon-btn {
-            background: none;
-            border: none;
-            color: var(--accent);
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.2s;
-        }
-        .icon-btn:hover { opacity: 0.7; }
-        .icon-btn svg { width: 22px; height: 22px; fill: currentColor; }
+        /* --- LAYOUT --- */
+        .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        .menu-btn { display: none; } /* Hidden on desktop */
-
-        /* --- 4. LAYOUT CONTAINER --- */
-        .layout {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        /* --- 5. SIDEBAR --- */
-        .sidebar {
-            width: 300px;
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .search-area {
-            padding: 10px 16px;
-            background: var(--bg-sidebar); /* Matches sidebar bg */
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 8px 12px 8px 32px;
-            border-radius: 10px;
-            border: none;
-            background-color: var(--bg-card); /* White in light, gray in dark */
-            color: var(--text-primary);
-            font-size: 15px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2398989d' viewBox='0 0 24 24'%3E%3Cpath d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' stroke='%2398989d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: 8px center;
-            background-size: 16px;
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
-        }
-        .search-input:focus { outline: 2px solid var(--accent); }
-
-        .case-list {
-            flex: 1;
+        aside {
+            width: 340px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column;
             overflow-y: auto;
-            padding: 10px 0 40px 0;
+            z-index: 40;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Sidebar Hierarchy */
-        .cat-header {
-            padding: 16px 16px 6px 16px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
+        .search-box {
+            padding: 1rem;
+            background: var(--bg-sidebar);
+            position: sticky; top: 0; z-index: 5;
+            border-bottom: 1px solid var(--border-color);
         }
+        .search-input {
+            width: 100%; padding: 0.85rem;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 0.5rem; font-size: 0.95rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: var(--accent-color); }
+
+        .case-list { padding: 0.5rem; padding-bottom: 3rem; }
         
-        .case-item {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 10px 16px 10px 24px; /* More indent for items */
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 15px;
-            cursor: pointer;
-            border-left: 3px solid transparent;
+        .category-header {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-muted); font-weight: 800;
+            padding: 1.5rem 0.5rem 0.5rem 0.75rem;
+            margin-top: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0.9;
+        }
+        .category-header:first-child { margin-top: 0; padding-top: 0.5rem; }
+
+        .case-btn {
+            width: 100%; text-align: left; padding: 1rem 0.75rem;
+            background: none; border: none; cursor: pointer;
+            color: var(--text-main); font-weight: 500; font-size: 0.95rem;
+            border-radius: 0.5rem; margin-bottom: 4px;
             transition: all 0.2s;
         }
-        
-        .case-item:hover {
-            background-color: var(--accent-soft);
-        }
-        
-        .case-item.active {
-            color: var(--accent);
-            background-color: var(--accent-soft);
-            border-left-color: var(--accent);
-            font-weight: 500;
+        .case-btn:hover { background-color: var(--bg-input); }
+        .case-btn.active {
+            background-color: var(--accent-bg); color: var(--accent-text);
+            font-weight: 700; border-left: 3px solid var(--accent-color);
         }
 
-        /* --- 6. MAIN CONTENT --- */
-        .main-view {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-app);
-            overflow: hidden;
-        }
-
-        .scroll-wrapper {
-            flex: 1;
-            overflow-y: auto;
+        /* --- CONTENT --- */
+        main {
+            flex: 1; overflow-y: auto; padding: 0 2rem 4rem 2rem;
+            background-color: var(--bg-body);
             scroll-behavior: smooth;
         }
 
-        .content-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 24px 24px 80px 24px;
+        .welcome-state {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; text-align: center; color: var(--text-muted); padding: 2rem;
         }
 
-        /* Header in Content */
-        .doc-header { margin-bottom: 24px; }
-        .doc-cat { 
-            color: var(--accent); 
-            font-size: 12px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em;
-            margin-bottom: 6px;
-        }
-        .doc-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1.1;
-        }
+        .case-details { max-width: 1000px; margin: 0 auto; display: none; padding-bottom: 6rem; }
+        .case-details.active { display: block; animation: fadeIn 0.4s ease-in-out; }
 
-        /* --- 7. APPLE STYLE TABS --- */
-        .tabs-sticky {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: var(--bg-app);
-            border-bottom: 1px solid var(--separator);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: rgba(var(--bg-app), 0.9); /* Fallback */
+        .details-header {
+            margin-bottom: 1rem; border-bottom: 1px solid var(--border-color);
+            padding: 2rem 0 1rem 0; display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .category-tag { font-size: 0.8rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        h2 { font-size: 2rem; color: var(--text-main); font-weight: 800; line-height: 1.2; margin: 0; }
+
+        .theme-toggle {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0.5rem; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+        }
+        .theme-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+
+        /* --- FLOATING TABS (Glassmorphism) --- */
+        .tabs-wrapper {
+            position: sticky; top: 0; z-index: 10;
+            padding: 1rem 0 1rem 0;
+            /* Transparent bg with strong blur */
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            background-color: transparent; /* Ensure transparency */
+            /* Gradient mask to fade out bottom edge slightly */
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            
+            margin: 0 -2rem 1.5rem -2rem; 
+            padding-left: 2rem; padding-right: 2rem;
         }
         
-        .tabs-row {
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding: 0 24px;
-            max-width: 800px;
-            margin: 0 auto;
-            gap: 24px;
-            scrollbar-width: none;
+        .tabs {
+            display: flex; padding: 0.25rem;
+            overflow-x: auto; gap: 0.75rem;
+            scrollbar-width: none; -ms-overflow-style: none;
         }
-        .tabs-row::-webkit-scrollbar { display: none; }
-
+        .tabs::-webkit-scrollbar { display: none; }
+        
         .tab-btn {
-            background: none;
-            border: none;
-            padding: 14px 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            cursor: pointer;
-            position: relative;
-            transition: color 0.2s;
+            flex: 0 0 auto; padding: 0.65rem 1.2rem; 
+            border: 1px solid var(--border-color); background: rgba(30, 30, 30, 0.6); 
+            cursor: pointer; border-radius: 2rem; 
+            font-weight: 600; color: var(--text-muted);
+            font-size: 0.9rem; white-space: nowrap; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .tab-btn:hover { background: var(--bg-input); color: var(--text-main); transform: translateY(-1px); }
+        
+        .tab-btn.active { 
+            background: var(--bg-card); color: var(--text-main); 
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3); 
+            transform: translateY(-2px);
         }
         
-        .tab-btn:hover { color: var(--text-primary); }
+        /* Tab specific active colors */
+        [data-theme="dark"] .tab-btn.clerking.active { color: #6ee7b7; border-color: #059669; background: #064e3b; }
+        [data-theme="light"] .tab-btn.clerking.active { color: #065f46; border-color: #10b981; background: #d1fae5; }
         
-        .tab-btn.active {
-            color: var(--accent);
-            font-weight: 600;
-        }
-        
-        /* Thin underline indicator */
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0; width: 100%;
-            height: 2px;
-            background-color: var(--accent);
-        }
+        [data-theme="dark"] .tab-btn.complications.active { color: #fca5a5; border-color: #dc2626; background: #7f1d1d; }
+        [data-theme="light"] .tab-btn.complications.active { color: #991b1b; border-color: #ef4444; background: #fef2f2; }
 
-        /* --- 8. CONTENT STYLING (Imitating Box Style) --- */
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
-        
-        /* Standard HTML Tag Styling to match 'Clerking' aesthetic */
-        .tab-content p {
-            margin-bottom: 16px;
-            line-height: 1.6;
-            font-size: 16px;
-            color: var(--text-primary);
+        [data-theme="dark"] .tab-btn.pearls.active { color: #c084fc; border-color: #9333ea; background: #581c87; }
+        [data-theme="light"] .tab-btn.pearls.active { color: #5b21b6; border-color: #8b5cf6; background: #f5f3ff; }
+
+        /* --- CONTENT CARD --- */
+        .content-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 1rem; padding: 2rem; min-height: 500px;
         }
-        
-        .tab-content ul, .tab-content ol {
-            margin-bottom: 16px;
-            padding-left: 20px;
-            color: var(--text-primary);
-        }
-        
-        .tab-content li {
-            margin-bottom: 8px;
-            line-height: 1.5;
-        }
-        
-        /* Auto-style headings in non-box sections to look like sections */
-        .tab-content h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-top: 32px;
-            margin-bottom: 12px;
-            padding: 8px 0;
-            color: var(--text-primary);
-            border-bottom: 1px solid var(--border);
+        .tab-content { display: none; line-height: 1.8; color: var(--text-main); font-size: 1.05rem; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+
+        /* Typography */
+        h3 {
+            font-size: 1.3rem; color: var(--text-main); margin: 2.5rem 0 1.25rem 0;
+            font-weight: 800; border-left: 5px solid var(--accent-color); padding-left: 1rem;
             letter-spacing: -0.01em;
         }
-        
-        /* Existing Box Classes (from JSON) */
-        .box {
-            background-color: var(--bg-card);
-            border-left: 4px solid var(--accent);
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        
-        /* Refined Box Colors */
-        .box-green { background-color: var(--box-green-bg); border-left-color: var(--box-green-border); }
-        .box-green .box-title { color: var(--box-green-text); }
-        
-        .box-blue { background-color: var(--box-blue-bg); border-left-color: var(--box-blue-border); }
-        .box-blue .box-title { color: var(--box-blue-text); }
-        
-        .box-red { background-color: var(--box-red-bg); border-left-color: var(--box-red-border); }
-        .box-red .box-title { color: var(--box-red-text); }
+        h3:first-child { margin-top: 0; }
+        p { margin-bottom: 1rem; }
+        ul { padding-left: 1.25rem; margin-bottom: 1.5rem; }
+        li { margin-bottom: 0.75rem; }
+        strong { color: var(--text-main); font-weight: 700; }
+        em { color: var(--text-muted); font-style: normal; font-weight: 600; font-size: 0.95em; }
 
-        .box-yellow { background-color: var(--box-yellow-bg); border-left-color: var(--box-yellow-border); }
-        .box-yellow .box-title { color: var(--box-yellow-text); }
+        /* Special Boxes */
+        .box { padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 2rem; border-left: 5px solid; background: var(--bg-box); }
+        .box-red { background: var(--box-red-bg); border-color: var(--box-red-border); color: var(--box-red-text); }
+        .box-green { background: var(--box-green-bg); border-color: var(--box-green-border); color: var(--box-green-text); }
+        .box-blue { background: var(--box-blue-bg); border-color: var(--box-blue-border); color: var(--box-blue-text); }
+        .box-purple { background: var(--box-purple-bg); border-color: var(--box-purple-border); color: var(--box-purple-text); }
+        .box-yellow { background: var(--box-yellow-bg); border-color: var(--box-yellow-border); color: var(--box-yellow-text); }
+        .box-title { display: block; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em; opacity: 0.9; }
 
-        .box-title {
-            display: block;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
-        }
-
+        /* Pearl Box */
         .pearl-box {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
+            background-color: var(--bg-box); border: 1px solid var(--box-purple-border);
+            border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem;
+            position: relative; overflow: hidden;
+        }
+        .pearl-box::before {
+            content: "💎"; position: absolute; right: 1rem; top: 1rem; font-size: 3rem; opacity: 0.1;
         }
         .pearl-title {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 12px;
-            color: var(--text-primary);
-            display: flex; align-items: center; gap: 8px;
+            color: var(--box-purple-text); font-weight: 800; font-size: 1.2rem;
+            margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
         }
 
-        /* --- 9. STATES --- */
-        .center-msg {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; text-align: center; color: var(--text-secondary); padding: 20px;
-        }
-        .center-msg h2 { margin-top: 16px; font-weight: 600; font-size: 20px; color: var(--text-primary); }
-
-        /* --- 10. MOBILE --- */
-        .backdrop {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .backdrop.open { opacity: 1; pointer-events: auto; }
+        /* --- MOBILE --- */
+        .menu-toggle { display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
+        .backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 35; backdrop-filter: blur(5px); }
 
         @media (max-width: 768px) {
-            .menu-btn { display: block; margin-right: 12px; }
-            .sidebar { position: absolute; height: 100%; z-index: 50; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-            .sidebar.open { transform: translateX(0); box-shadow: 20px 0 40px rgba(0,0,0,0.3); }
-            .content-container { padding: 20px 16px 80px 16px; }
-            .header-title { text-align: left; }
+            .menu-toggle { display: block; margin-right: 0.5rem; }
+            h1 { font-size: 1rem; }
+            aside { position: absolute; height: 100%; width: 85%; transform: translateX(-100%); }
+            aside.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+            .backdrop.open { display: block; }
+            main { padding: 0 1rem 6rem 1rem; }
+            .content-card { padding: 0; border: none; background: transparent; }
+            .box, .pearl-box { padding: 1.25rem; }
+            .tabs-wrapper { margin: 0 -1rem 1rem -1rem; padding-left: 1rem; padding-right: 1rem; }
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- Header (Global) -->
-    <header class="app-header">
-        <div class="header-left">
-            <button class="icon-btn menu-btn" onclick="toggleSidebar()">
-                <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </button>
+    <header>
+        <div style="display: flex; align-items: center;">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="logo-area">
+                <span style="font-size: 1.2rem;">⚕️</span>
+                <h1>Long Case Companion</h1>
+            </div>
         </div>
-        
-        <div class="header-title">Clerkship Companion</div>
-
-        <div class="header-right">
-            <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
-                <!-- Sun Icon -->
-                <svg id="sun-icon" style="display:none" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"></path></svg>
-                <!-- Moon Icon -->
-                <svg id="moon-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg>
-            </button>
-        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <svg id="sun-icon" style="display:none" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"></path></svg>
+            <svg id="moon-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg>
+        </button>
     </header>
 
-    <div class="layout">
-        <!-- Mobile Backdrop -->
+    <div class="main-container">
         <div class="backdrop" id="backdrop" onclick="toggleSidebar()"></div>
-
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="search-area">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search conditions...">
+        
+        <aside id="sidebar">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search cases...">
             </div>
-            <div id="caseList" class="case-list">
-                <!-- Javascript will inject list here -->
-            </div>
+            <div id="caseList" class="case-list"></div>
         </aside>
 
-        <!-- Main Content -->
-        <main class="main-view">
-            
-            <!-- States -->
-            <div id="welcomeState" class="center-msg">
-                <div style="font-size:3rem; opacity:0.3; margin-bottom:10px;">🩺</div>
+        <main>
+            <div id="welcomeState" class="welcome-state">
+                <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.3;">🩻</div>
                 <h2>Clinical Clerkship Companion</h2>
-                <p>Select a topic to begin.</p>
-            </div>
-            <div id="loadingState" class="center-msg" style="display:none;">
-                <p>Loading database...</p>
-            </div>
-            <div id="errorState" class="center-msg" style="display:none; color: #ff453a;">
-                <p>Unable to load data.</p>
+                <p>Select a disease to view detailed notes.<br>Optimized for ward rounds.</p>
+                <!-- Loading indicator fallback -->
+                <p id="loadingMsg" style="margin-top:2rem; color: var(--accent-color); display:none;">Loading Data...</p>
+                <p id="errorMsg" style="margin-top:2rem; color: var(--box-red-border); display:none; max-width:400px; font-size:0.9rem; border:1px solid var(--border-color); padding:1rem; border-radius:0.5rem;">
+                    <strong>⚠️ Data Load Error</strong><br><br>
+                    Unable to load 'medical_data.json'.<br><br>
+                    If you are opening this file directly from your computer, your browser may block it for security. Try running a local server (e.g. VS Code Live Server).
+                </p>
             </div>
 
-            <!-- Detail View -->
-            <div id="detailView" style="display:none; height:100%; display:flex; flex-direction:column;">
-                
-                <!-- Sticky Tabs (Thin Apple Style) -->
-                <div class="tabs-sticky">
-                    <div class="tabs-row">
-                        <button class="tab-btn active" onclick="switchTab('clerking')">Clerking</button>
-                        <button class="tab-btn" onclick="switchTab('history')">History</button>
-                        <button class="tab-btn" onclick="switchTab('physiology')">Physiology</button>
-                        <button class="tab-btn" onclick="switchTab('exam')">Examination</button>
-                        <button class="tab-btn" onclick="switchTab('inv')">Investigations</button>
-                        <button class="tab-btn" onclick="switchTab('mgmt')">Management</button>
-                        <button class="tab-btn" onclick="switchTab('complications')">Complications</button>
-                        <button class="tab-btn" onclick="switchTab('pearls')">Pearls</button>
+            <div id="caseDetails" class="case-details">
+                <div class="details-header">
+                    <div>
+                        <div id="categoryTag" class="category-tag">Category</div>
+                        <h2 id="caseTitle">Condition Name</h2>
+                    </div>
+                    <div class="header-actions">
+                        <button class="copy-btn" onclick="copyContent()">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                            <span>Copy Data</span>
+                        </button>
                     </div>
                 </div>
 
-                <div class="scroll-wrapper">
-                    <div class="content-container">
-                        <div class="doc-header">
-                            <div id="docCategory" class="doc-cat">Category</div>
-                            <h1 id="docTitle" class="doc-title">Title</h1>
-                        </div>
-
-                        <div id="tab-clerking" class="tab-content active"></div>
-                        <div id="tab-history" class="tab-content"></div>
-                        <div id="tab-physiology" class="tab-content"></div>
-                        <div id="tab-exam" class="tab-content"></div>
-                        <div id="tab-inv" class="tab-content"></div>
-                        <div id="tab-mgmt" class="tab-content"></div>
-                        <div id="tab-complications" class="tab-content"></div>
-                        <div id="tab-pearls" class="tab-content"></div>
+                <div class="tabs-wrapper">
+                    <div class="tabs">
+                        <button class="tab-btn active clerking" onclick="switchTab('clerking', this)">📝 Clerking</button>
+                        <button class="tab-btn" onclick="switchTab('history', this)">📜 History</button>
+                        <button class="tab-btn" onclick="switchTab('etiology', this)">🧬 Etiology</button>
+                        <button class="tab-btn" onclick="switchTab('exam', this)">🩺 Exam</button>
+                        <button class="tab-btn" onclick="switchTab('inv', this)">🔬 Inv</button>
+                        <button class="tab-btn" onclick="switchTab('mgmt', this)">💊 Mgmt</button>
+                        <button class="tab-btn complications" onclick="switchTab('complications', this)">⚠️ Complications</button>
+                        <button class="tab-btn pearls" onclick="switchTab('pearls', this)">💎 Pearls</button>
                     </div>
                 </div>
-            </div>
 
+                <div class="content-card">
+                    <div id="tab-clerking" class="tab-content active"></div>
+                    <div id="tab-history" class="tab-content"></div>
+                    <div id="tab-etiology" class="tab-content"></div>
+                    <div id="tab-exam" class="tab-content"></div>
+                    <div id="tab-inv" class="tab-content"></div>
+                    <div id="tab-mgmt" class="tab-content"></div>
+                    <div id="tab-complications" class="tab-content"></div>
+                    <div id="tab-pearls" class="tab-content"></div>
+                </div>
+            </div>
         </main>
     </div>
 
     <script>
-        let medicalData = [];
+        // --- THEME ---
+        const body = document.documentElement;
         const sunIcon = document.getElementById('sun-icon');
         const moonIcon = document.getElementById('moon-icon');
 
-        // --- THEME ENGINE ---
         function initTheme() {
-            const saved = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            if (saved === 'dark' || (!saved && prefersDark)) {
-                setTheme('dark');
-            } else {
-                setTheme('light');
-            }
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            body.setAttribute('data-theme', savedTheme);
+            updateIcons(savedTheme);
         }
-
         function toggleTheme() {
-            const current = document.documentElement.getAttribute('data-theme');
-            setTheme(current === 'dark' ? 'light' : 'dark');
+            const current = body.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            updateIcons(next);
         }
-
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            
+        function updateIcons(theme) {
             if (theme === 'dark') {
                 sunIcon.style.display = 'none';
                 moonIcon.style.display = 'block';
@@ -523,123 +388,150 @@
                 moonIcon.style.display = 'none';
             }
         }
+        initTheme();
 
-        // --- DATA LOGIC ---
-        async function loadData() {
-            document.getElementById('welcomeState').style.display = 'none';
-            document.getElementById('loadingState').style.display = 'flex';
-            
+        // --- APP LOGIC ---
+
+        const caseListEl = document.getElementById('caseList');
+        const searchInput = document.getElementById('searchInput');
+        const welcomeState = document.getElementById('welcomeState');
+        const caseDetails = document.getElementById('caseDetails');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+        const loadingMsg = document.getElementById('loadingMsg');
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Global variable to hold the fetched data
+        let medicalData = [];
+
+        async function initApp() {
+            loadingMsg.style.display = 'block';
             try {
-                const res = await fetch('medical_data.json');
-                if(!res.ok) throw new Error("Failed");
-                medicalData = await res.json();
-                renderSidebar();
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('welcomeState').style.display = 'flex';
+                const response = await fetch('medical_data.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                medicalData = await response.json();
+                loadingMsg.style.display = 'none';
+                renderList();
             } catch (e) {
-                document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('errorState').style.display = 'flex';
+                console.error("Failed to load medical data:", e);
+                loadingMsg.style.display = 'none';
+                errorMsg.style.display = 'block';
             }
         }
 
-        function renderSidebar(query = "") {
-            const list = document.getElementById('caseList');
-            list.innerHTML = "";
-            const cats = [...new Set(medicalData.map(i => i.category))].sort();
+        function renderList(filter = '') {
+            caseListEl.innerHTML = '';
             
-            cats.forEach(cat => {
-                const items = medicalData.filter(i => 
-                    i.category === cat && 
-                    i.name.toLowerCase().includes(query.toLowerCase())
+            // Get unique categories
+            const categories = [...new Set(medicalData.map(item => item.category))];
+            
+            let foundAny = false;
+
+            categories.forEach(cat => {
+                const itemsInCat = medicalData.filter(item => 
+                    item.category === cat && 
+                    item.name.toLowerCase().includes(filter.toLowerCase())
                 );
-                
-                if (items.length) {
-                    const h = document.createElement('div');
-                    h.className = "cat-header";
-                    h.innerText = cat;
-                    list.appendChild(h);
-                    
-                    items.forEach(item => {
+
+                if (itemsInCat.length > 0) {
+                    foundAny = true;
+                    // Add Category Header
+                    const header = document.createElement('div');
+                    header.className = 'category-header';
+                    header.innerText = cat;
+                    caseListEl.appendChild(header);
+
+                    // Add Items
+                    itemsInCat.forEach(item => {
                         const btn = document.createElement('button');
-                        btn.className = "case-item";
-                        btn.innerText = item.name;
-                        btn.onclick = () => openCase(item.id, btn);
-                        list.appendChild(btn);
+                        btn.className = 'case-btn';
+                        btn.onclick = () => selectCase(item.id, btn);
+                        btn.innerHTML = item.name;
+                        caseListEl.appendChild(btn);
                     });
                 }
             });
+
+            if (!foundAny && medicalData.length > 0) {
+                caseListEl.innerHTML = '<div style="padding:2rem; text-align:center; color:var(--text-muted); font-size:0.9rem;">No matches found</div>';
+            }
         }
 
-        function openCase(id, btn) {
-            // Sidebar Active State
-            document.querySelectorAll('.case-item').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
+        function selectCase(id, btnElement) {
+            document.querySelectorAll('.case-btn').forEach(b => b.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
 
             const data = medicalData.find(d => d.id === id);
             
-            document.getElementById('docCategory').innerText = data.category;
-            document.getElementById('docTitle').innerText = data.name;
-
-            // Fill tabs (Use physiology OR etiology)
-            const map = {
-                'clerking': data.clerking,
-                'history': data.history,
-                'physiology': data.physiology || data.etiology,
-                'exam': data.exam,
-                'inv': data.inv,
-                'mgmt': data.mgmt,
-                'complications': data.complications,
-                'pearls': data.pearls
-            };
-
-            for (const [key, val] of Object.entries(map)) {
-                document.getElementById(`tab-${key}`).innerHTML = val || "<p style='color:var(--text-secondary)'>No data available.</p>";
-            }
-
-            // View State
-            document.getElementById('welcomeState').style.display = 'none';
-            document.getElementById('detailView').style.display = 'flex'; // Flex to support sticky tabs
-
-            // Default Tab
-            switchTab('clerking');
+            document.getElementById('categoryTag').innerText = data.category;
+            document.getElementById('caseTitle').innerText = data.name;
             
-            // Mobile: Close sidebar
-            if(window.innerWidth <= 768) toggleSidebar();
-            
-            // Scroll Top
-            document.querySelector('.scroll-wrapper').scrollTop = 0;
-        }
-
-        function switchTab(name) {
-            document.querySelectorAll('.tab-btn').forEach(b => {
-                // Simple check for tab activation
-                const txt = b.innerText.toLowerCase();
-                const target = name.toLowerCase();
-                if(txt.includes(target) || (target === 'physiology' && txt.includes('etiology'))) {
-                    b.classList.add('active');
-                } else {
-                    b.classList.remove('active');
-                }
+            const sections = ['clerking', 'history', 'etiology', 'exam', 'inv', 'mgmt', 'complications', 'pearls'];
+            sections.forEach(sec => {
+                document.getElementById(`tab-${sec}`).innerHTML = data[sec] || '<div class="box box-blue">Data coming soon...</div>';
             });
 
+            welcomeState.style.display = 'none';
+            caseDetails.classList.add('active');
+            
+            const clerkTabBtn = document.querySelector('.tab-btn.clerking');
+            if(clerkTabBtn) switchTab('clerking', clerkTabBtn);
+
+            if(window.innerWidth <= 768) toggleSidebar(false);
+            
+            document.querySelector('main').scrollTop = 0;
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            const content = document.getElementById(`tab-${name}`);
-            if(content) content.classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        // --- UI UTILS ---
-        document.getElementById('searchInput').addEventListener('input', e => renderSidebar(e.target.value));
-
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            const bd = document.getElementById('backdrop');
-            sb.classList.toggle('open');
-            bd.classList.toggle('open');
+        function toggleSidebar(forceState) {
+            const isOpen = sidebar.classList.contains('open');
+            const shouldOpen = forceState !== undefined ? forceState : !isOpen;
+            
+            if (shouldOpen) {
+                sidebar.classList.add('open');
+                backdrop.classList.add('open');
+            } else {
+                sidebar.classList.remove('open');
+                backdrop.classList.remove('open');
+            }
         }
 
-        // Start
-        initTheme();
-        loadData();
+        function copyContent() {
+            const title = document.getElementById('caseTitle').innerText;
+            const strip = (html) => {
+                let tmp = document.createElement("DIV");
+                tmp.innerHTML = html;
+                return tmp.innerText;
+            };
+
+            const sections = ['clerking', 'history', 'etiology', 'exam', 'inv', 'mgmt', 'complications', 'pearls'];
+            let text = `CONDITION: ${title}\n\n`;
+            
+            sections.forEach(sec => {
+                const content = document.getElementById(`tab-${sec}`).innerHTML;
+                if(content) text += `[${sec.toUpperCase()}]\n${strip(content)}\n\n`;
+            });
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btnSpan = document.querySelector('.copy-btn span');
+                const orig = btnSpan.innerText;
+                btnSpan.innerText = "Copied!";
+                setTimeout(() => btnSpan.innerText = orig, 2000);
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => renderList(e.target.value));
+        
+        // Start the app
+        initApp();
 
     </script>
 </body>
