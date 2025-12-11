@@ -1,335 +1,451 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Long Case Medical Companion</title>
+    <title>Clinical Clerkship Companion</title>
     <style>
-        /* --- CSS VARIABLES --- */
+        /* --- 1. CSS VARIABLES & THEME CONFIGURATION --- */
         :root {
-            --bg-body: #000000;
-            --bg-sidebar: #050505;
-            --bg-card: #0a0a0a;
-            --bg-box: #111111;
-            --bg-input: #171717;
-            --border-color: #1f2937;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --accent-color: #3b82f6;
-            --accent-bg: #172554;
-            --accent-text: #bfdbfe;
-            --header-bg: rgba(0, 0, 0, 0.95);
-            
-            /* Special Box Colors */
-            --box-green-bg: rgba(6, 78, 59, 0.25); --box-green-border: #059669; --box-green-text: #6ee7b7;
-            --box-blue-bg: rgba(30, 58, 138, 0.25); --box-blue-border: #2563eb; --box-blue-text: #93c5fd;
-            --box-red-bg: rgba(127, 29, 29, 0.25); --box-red-border: #dc2626; --box-red-text: #fca5a5;
-            --box-purple-bg: rgba(88, 28, 135, 0.25); --box-purple-border: #9333ea; --box-purple-text: #e9d5ff;
-            --box-yellow-bg: rgba(120, 53, 15, 0.25); --box-yellow-border: #d97706; --box-yellow-text: #fde68a;
-        }
-
-        [data-theme="light"] {
+            /* Light Mode (Default) */
             --bg-body: #f8fafc;
             --bg-sidebar: #ffffff;
-            --bg-card: #ffffff;
-            --bg-box: #f1f5f9;
-            --bg-input: #f1f5f9;
-            --border-color: #e2e8f0;
-            --text-main: #334155;
+            --bg-content: #ffffff;
+            --bg-hover: #f1f5f9;
+            --bg-active: #e0f2fe;
+            
+            --text-main: #0f172a;
             --text-muted: #64748b;
-            --accent-color: #2563eb;
-            --accent-bg: #eff6ff;
-            --accent-text: #1e40af;
-            --header-bg: rgba(255, 255, 255, 0.95);
-
-            --box-green-bg: #ecfdf5; --box-green-border: #10b981; --box-green-text: #065f46;
-            --box-blue-bg: #eff6ff; --box-blue-border: #3b82f6; --box-blue-text: #1e40af;
-            --box-red-bg: #fef2f2; --box-red-border: #ef4444; --box-red-text: #991b1b;
-            --box-purple-bg: #f5f3ff; --box-purple-border: #8b5cf6; --box-purple-text: #5b21b6;
-            --box-yellow-bg: #fffbeb; --box-yellow-border: #d97706; --box-yellow-text: #92400e;
+            --text-light: #94a3b8;
+            
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            
+            --primary: #0284c7; /* Sky 600 */
+            --primary-bg: #e0f2fe;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            
+            /* Special Medical Box Colors (Light) */
+            --box-green-bg: #ecfdf5; --box-green-border: #34d399; --box-green-text: #064e3b;
+            --box-blue-bg: #eff6ff; --box-blue-border: #60a5fa; --box-blue-text: #1e3a8a;
+            --box-red-bg: #fef2f2; --box-red-border: #f87171; --box-red-text: #7f1d1d;
+            --box-yellow-bg: #fffbeb; --box-yellow-border: #fbbf24; --box-yellow-text: #78350f;
+            --box-purple-bg: #faf5ff; --box-purple-border: #a78bfa; --box-purple-text: #581c87;
         }
 
-        /* --- RESET & BASE --- */
+        [data-theme="dark"] {
+            /* Dark Mode Overrides */
+            --bg-body: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-content: #1e293b;
+            --bg-hover: #334155;
+            --bg-active: #1e3a8a; /* Darker blue highlight */
+            
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+            
+            --border-subtle: #334155;
+            --border-strong: #475569;
+            
+            --primary: #38bdf8; /* Sky 400 */
+            --primary-bg: rgba(56, 189, 248, 0.15);
+            
+            --shadow-sm: none;
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+
+            /* Special Medical Box Colors (Dark) */
+            --box-green-bg: rgba(6, 78, 59, 0.4); --box-green-border: #059669; --box-green-text: #a7f3d0;
+            --box-blue-bg: rgba(30, 58, 138, 0.4); --box-blue-border: #2563eb; --box-blue-text: #bfdbfe;
+            --box-red-bg: rgba(127, 29, 29, 0.4); --box-red-border: #dc2626; --box-red-text: #fecaca;
+            --box-yellow-bg: rgba(120, 53, 15, 0.4); --box-yellow-border: #d97706; --box-yellow-text: #fde68a;
+            --box-purple-bg: rgba(88, 28, 135, 0.4); --box-purple-border: #9333ea; --box-purple-text: #e9d5ff;
+        }
+
+        /* --- 2. GLOBAL RESET & BASE STYLES --- */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             height: 100vh;
+            overflow: hidden; /* Prevent body scroll, we scroll internal elements */
+            display: flex;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* --- 3. SIDEBAR (Navigation) --- */
+        .sidebar {
+            width: 320px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border-subtle);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            transition: background-color 0.3s, color 0.3s;
-            line-height: 1.6;
-        }
-
-        /* --- HEADER --- */
-        header {
-            background-color: var(--header-bg);
-            backdrop-filter: blur(10px);
-            padding: 0.75rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
             z-index: 50;
-        }
-        .logo-area { display: flex; align-items: center; gap: 0.75rem; }
-        h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; color: var(--accent-color); }
-        
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            width: 40px; height: 40px;
-        }
-        .theme-toggle svg { width: 20px; height: 20px; fill: currentColor; }
-
-        /* --- LAYOUT --- */
-        .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
-
-        aside {
-            width: 320px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border-color);
-            display: flex; flex-direction: column;
-            overflow-y: auto;
-            z-index: 40;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .search-box {
-            padding: 1rem;
-            background: var(--bg-sidebar);
-            position: sticky; top: 0; z-index: 5;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .search-input {
-            width: 100%; padding: 0.75rem;
-            background-color: var(--bg-input);
-            border: 1px solid var(--border-color);
+        .brand {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
             color: var(--text-main);
-            border-radius: 0.5rem; font-size: 0.95rem; outline: none;
-        }
-        .search-input:focus { border-color: var(--accent-color); }
-
-        .case-list { padding: 0.5rem; padding-bottom: 2rem; }
-        
-        .category-header {
-            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
-            color: var(--text-muted); font-weight: 800;
-            padding: 1.5rem 0.5rem 0.5rem 0.75rem;
-            margin-top: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            opacity: 0.8;
-        }
-        .category-header:first-child { margin-top: 0; padding-top: 0.5rem; }
-
-        .case-btn {
-            width: 100%; text-align: left; padding: 0.85rem 0.75rem;
-            background: none; border: none; cursor: pointer;
-            color: var(--text-main); font-weight: 500; font-size: 0.95rem;
-            transition: all 0.2s;
-            border-radius: 0.375rem; margin-bottom: 2px;
-        }
-        .case-btn:hover { background-color: var(--bg-input); }
-        .case-btn.active {
-            background-color: var(--accent-bg); color: var(--accent-text);
-            font-weight: 600; border-left: 3px solid var(--accent-color);
         }
 
-        /* --- CONTENT --- */
-        main {
-            flex: 1; overflow-y: auto; padding: 0 1.5rem 1.5rem 1.5rem;
+        .search-wrapper {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-sidebar); /* Sticky needs opaque background */
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 0.8rem 0.6rem 2.2rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-strong);
             background-color: var(--bg-body);
-            scroll-behavior: smooth;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 0.6rem center;
+            background-size: 1rem;
+        }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-bg); }
+
+        .case-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
         }
 
-        .welcome-state {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; text-align: center; color: var(--text-muted); padding: 2rem;
-        }
-        
-        .loading-state {
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; color: var(--text-muted); padding: 2rem;
+        .category-group { margin-bottom: 1.5rem; }
+        .category-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            font-weight: 700;
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.5rem;
         }
 
-        .case-details { max-width: 900px; margin: 0 auto; display: none; padding-bottom: 4rem; }
-        .case-details.active { display: block; animation: fadeIn 0.3s ease-in-out; }
-
-        .details-header {
-            margin-bottom: 1rem; border-bottom: 1px solid var(--border-color);
-            padding: 2rem 0 1rem 0; display: flex; flex-direction: column; gap: 0.5rem;
-        }
-        .category-tag { font-size: 0.75rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        h2 { font-size: 1.75rem; color: var(--text-main); font-weight: 800; line-height: 1.2; margin: 0; }
-
-        /* --- FLOATING TABS (Glassmorphism) --- */
-        .tabs-wrapper {
-            position: sticky; top: 0; z-index: 10;
-            padding: 1rem 0 0.5rem 0;
-            background: transparent;
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-            margin: 0 -1.5rem 1rem -1.5rem; 
-            padding-left: 1.5rem; padding-right: 1.5rem;
-        }
-        .tabs {
-            display: flex; padding: 0.25rem;
-            overflow-x: auto; gap: 0.5rem;
-            scrollbar-width: none;
-        }
-        .tabs::-webkit-scrollbar { display: none; }
-        
-        .tab-btn {
-            flex: 0 0 auto; padding: 0.6rem 1rem; 
-            border: 1px solid var(--border-color); background: var(--bg-input); 
-            cursor: pointer; border-radius: 2rem; 
-            font-weight: 600; color: var(--text-muted);
-            font-size: 0.85rem; white-space: nowrap; 
+        .nav-item {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 0.75rem;
+            margin-bottom: 2px;
+            border: none;
+            background: none;
+            border-radius: 0.375rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
             transition: all 0.2s;
-            display: flex; align-items: center; gap: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .tab-btn:hover { background: var(--bg-card); color: var(--text-main); transform: translateY(-1px); }
-        .tab-btn.active { 
-            background: var(--bg-card); color: var(--text-main); 
-            border-color: var(--accent-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
-            transform: translateY(-2px);
+        .nav-item:hover { background-color: var(--bg-hover); color: var(--text-main); }
+        .nav-item.active {
+            background-color: var(--bg-active);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .nav-item.active::after {
+            content: '';
+            width: 6px; height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        /* --- 4. MAIN CONTENT AREA --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--bg-body);
+        }
+
+        /* Header */
+        .top-bar {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-content);
+            border-bottom: 1px solid var(--border-subtle);
+            min-height: 70px;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none; border: none;
+            font-size: 1.5rem; color: var(--text-main);
+            cursor: pointer; padding: 0.25rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { background: var(--border-subtle); }
+        .theme-toggle svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* Scrollable Content */
+        .scroll-container {
+            flex: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 0;
+            position: relative;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            padding-bottom: 6rem;
+        }
+
+        /* Tabs (No Background Style) */
+        .sticky-tabs {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            padding: 0.5rem 0;
+            margin-bottom: 2rem;
+            background: rgba(var(--bg-body), 0.8); /* Fallback */
+            /* Advanced Blur for modern browsers */
+            background: var(--bg-body); 
+            mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
         }
         
-        /* Colored Active States */
-        [data-theme="dark"] .tab-btn.clerking.active { color: #6ee7b7; border-color: #059669; background: #064e3b; }
-        [data-theme="light"] .tab-btn.clerking.active { color: #065f46; border-color: #10b981; background: #d1fae5; }
+        /* Actually, let's make the background transparent as requested but ensure readability */
+        .tabs-nav {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 0.5rem 0.5rem 1rem 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            scrollbar-width: none; /* Firefox */
+        }
+        .tabs-nav::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active { color: var(--primary); font-weight: 600; }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; /* Align with border-bottom of container */
+            left: 0; width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* --- 5. DYNAMIC CONTENT STYLING (Injected HTML) --- */
+        .case-header { margin-bottom: 1rem; }
+        .case-category {
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .case-title { font-size: 2rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+
+        /* Styling for the HTML strings inside JSON */
+        .tab-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 1.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .tab-content p { margin-bottom: 1rem; line-height: 1.7; color: var(--text-main); }
+        .tab-content ul, .tab-content ol { margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-main); }
+        .tab-content li { margin-bottom: 0.5rem; line-height: 1.6; }
         
-        [data-theme="dark"] .tab-btn.complications.active { color: #fca5a5; border-color: #dc2626; background: #7f1d1d; }
-        [data-theme="light"] .tab-btn.complications.active { color: #991b1b; border-color: #ef4444; background: #fef2f2; }
-
-        [data-theme="dark"] .tab-btn.pearls.active { color: #c084fc; border-color: #9333ea; background: #581c87; }
-        [data-theme="light"] .tab-btn.pearls.active { color: #5b21b6; border-color: #8b5cf6; background: #f5f3ff; }
-
-        /* --- CONTENT CARD --- */
-        .content-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 1rem; padding: 1.5rem; min-height: 400px;
+        /* Special Boxes (reusing logic from old file but cleaner) */
+        .box {
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid transparent;
+            border-left-width: 4px;
         }
-        .tab-content { display: none; line-height: 1.8; color: var(--text-main); font-size: 1.05rem; }
-        .tab-content.active { display: block; animation: fadeIn 0.2s; }
-
-        h3 {
-            font-size: 1.15rem; color: var(--text-main); margin: 2rem 0 1rem 0;
-            font-weight: 700; border-left: 4px solid var(--accent-color); padding-left: 1rem;
-        }
-        h3:first-child { margin-top: 0; }
-        ul { padding-left: 1.25rem; margin-bottom: 1.5rem; }
-        li { margin-bottom: 0.6rem; }
-        strong { color: var(--text-main); font-weight: 700; }
-        em { color: var(--text-muted); font-style: normal; font-weight: 600; font-size: 0.9em; }
-
-        /* Special Boxes */
-        .box { padding: 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; border-left: 4px solid; background: var(--bg-box); }
-        .box-red { background: var(--box-red-bg); border-color: var(--box-red-border); color: var(--box-red-text); }
+        .box-title { display: block; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; opacity: 0.9; }
+        
         .box-green { background: var(--box-green-bg); border-color: var(--box-green-border); color: var(--box-green-text); }
         .box-blue { background: var(--box-blue-bg); border-color: var(--box-blue-border); color: var(--box-blue-text); }
-        .box-purple { background: var(--box-purple-bg); border-color: var(--box-purple-border); color: var(--box-purple-text); }
+        .box-red { background: var(--box-red-bg); border-color: var(--box-red-border); color: var(--box-red-text); }
         .box-yellow { background: var(--box-yellow-bg); border-color: var(--box-yellow-border); color: var(--box-yellow-text); }
-        .box-title { display: block; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; opacity: 0.9; letter-spacing: 0.05em; }
-
+        
         .pearl-box {
-            background-color: var(--bg-box); border: 1px solid var(--box-purple-border);
-            border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem;
+            background: var(--bg-content);
+            border: 1px solid var(--box-purple-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
         }
-        .pearl-title {
-            color: var(--box-purple-text); font-weight: 700; font-size: 1.1rem;
-            margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
+        .pearl-box::before {
+            content: '';
+            position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--box-purple-border);
         }
+        .pearl-title { color: var(--box-purple-text); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.75rem; }
 
-        /* --- MOBILE --- */
-        .menu-toggle { display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
-        .backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 35; backdrop-filter: blur(4px); }
+        /* Welcome & Loading States */
+        .state-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; text-align: center; color: var(--text-muted);
+            padding: 2rem;
+        }
+        .state-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        /* --- 6. MOBILE RESPONSIVENESS --- */
+        .overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+            z-index: 40;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .overlay.active { opacity: 1; pointer-events: auto; }
 
         @media (max-width: 768px) {
-            .menu-toggle { display: block; margin-right: 0.5rem; }
-            h1 { font-size: 1rem; }
-            aside { position: absolute; height: 100%; width: 85%; transform: translateX(-100%); }
-            aside.open { transform: translateX(0); box-shadow: 10px 0 25px rgba(0,0,0,0.5); }
-            .backdrop.open { display: block; }
-            main { padding: 0 1rem 6rem 1rem; }
-            .content-card { padding: 0; border: none; background: transparent; }
-            .box, .pearl-box { padding: 1.25rem; }
-            .tabs-wrapper { margin: 0 -1rem 1rem -1rem; padding-left: 1rem; padding-right: 1rem; }
+            .mobile-menu-btn { display: block; }
+            .sidebar {
+                position: absolute;
+                height: 100%;
+                transform: translateX(-100%);
+                box-shadow: 10px 0 25px rgba(0,0,0,0.2);
+            }
+            .sidebar.open { transform: translateX(0); }
+            .content-wrapper { padding: 1rem; }
+            .case-title { font-size: 1.5rem; }
+            .tabs-nav { gap: 1rem; }
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <header>
-        <div style="display: flex; align-items: center;">
-            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-            <div class="logo-area">
-                <span style="font-size: 1.2rem;">⚕️</span>
-                <h1>Long Case Companion</h1>
-            </div>
+    <!-- OVERLAY for Mobile -->
+    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="brand">
+            <span>⚕️</span> Clinical Notes
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()">
-            <svg id="sun-icon" style="display:none" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"></path></svg>
-            <svg id="moon-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg>
-        </button>
-    </header>
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search conditions...">
+        </div>
+        <div id="caseList" class="case-list">
+            <!-- List items injected here -->
+        </div>
+    </aside>
 
-    <div class="main-container">
-        <div class="backdrop" id="backdrop" onclick="toggleSidebar()"></div>
-        
-        <aside id="sidebar">
-            <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search cases...">
-            </div>
-            <div id="caseList" class="case-list"></div>
-        </aside>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <header class="top-bar">
+            <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
+            <div style="flex:1"></div> <!-- Spacer -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <svg id="icon-sun" viewBox="0 0 24 24" style="display:none"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 00-1.41 0 .996.996 0 000 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 000-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 000-1.41.996.996 0 00-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"></path></svg>
+                <svg id="icon-moon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg>
+            </button>
+        </header>
 
-        <main>
-            <div id="welcomeState" class="welcome-state">
-                <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.3;">🩻</div>
-                <h2>Clinical Clerkship Companion</h2>
-                <p>Select a disease from the sidebar to view details.</p>
-                <div style="margin-top: 1rem; color: #64748b; font-size: 0.9rem;">Loading database...</div>
-            </div>
+        <div class="scroll-container">
             
-            <div id="loadingState" class="loading-state">
+            <!-- Welcome State -->
+            <div id="welcomeState" class="state-container">
+                <div class="state-icon">🩻</div>
+                <h2>Select a Condition</h2>
+                <p>Choose a topic from the sidebar to view details.</p>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="state-container" style="display:none;">
                 <p>Loading medical data...</p>
             </div>
 
-            <div id="caseDetails" class="case-details">
-                <div class="details-header">
-                    <div>
-                        <div id="categoryTag" class="category-tag">Category</div>
-                        <h2 id="caseTitle">Condition Name</h2>
-                    </div>
+            <!-- Content View -->
+            <div id="caseView" style="display:none;">
+                <div class="sticky-tabs">
+                    <!-- We place nav inside content wrapper to align with text, but wrapper itself is sticky -->
+                     <div style="max-width: 900px; margin: 0 auto; padding: 0 2rem;">
+                        <nav class="tabs-nav">
+                            <button class="tab-btn active" onclick="switchTab('clerking')">Clerking</button>
+                            <button class="tab-btn" onclick="switchTab('history')">History</button>
+                            <button class="tab-btn" onclick="switchTab('physiology')">Physiology</button>
+                            <button class="tab-btn" onclick="switchTab('exam')">Examination</button>
+                            <button class="tab-btn" onclick="switchTab('inv')">Investigations</button>
+                            <button class="tab-btn" onclick="switchTab('mgmt')">Management</button>
+                            <button class="tab-btn" onclick="switchTab('complications')">Complications</button>
+                            <button class="tab-btn" onclick="switchTab('pearls')">Pearls</button>
+                        </nav>
+                     </div>
                 </div>
 
-                <div class="tabs-wrapper">
-                    <div class="tabs">
-                        <button class="tab-btn active clerking" onclick="switchTab('clerking', this)">📝 Clerking</button>
-                        <button class="tab-btn" onclick="switchTab('history', this)">📜 History</button>
-                        <button class="tab-btn" onclick="switchTab('physiology', this)">🧬 Physiology & Etiology</button>
-                        <button class="tab-btn" onclick="switchTab('exam', this)">🩺 Examination</button>
-                        <button class="tab-btn" onclick="switchTab('inv', this)">🔬 Investigations</button>
-                        <button class="tab-btn" onclick="switchTab('mgmt', this)">💊 Management</button>
-                        <button class="tab-btn complications" onclick="switchTab('complications', this)">⚠️ Complications</button>
-                        <button class="tab-btn pearls" onclick="switchTab('pearls', this)">💎 Pearls</button>
+                <div class="content-wrapper">
+                    <div class="case-header">
+                        <div id="caseCategory" class="case-category">Category</div>
+                        <h1 id="caseName" class="case-title">Disease Name</h1>
                     </div>
-                </div>
 
-                <div class="content-card">
                     <div id="tab-clerking" class="tab-content active"></div>
                     <div id="tab-history" class="tab-content"></div>
                     <div id="tab-physiology" class="tab-content"></div>
@@ -340,151 +456,209 @@
                     <div id="tab-pearls" class="tab-content"></div>
                 </div>
             </div>
-        </main>
-    </div>
+
+        </div>
+    </main>
 
     <script>
-        // --- DATA FETCHER ---
-        // In this single file version, the fetch logic is replaced by a direct variable assignment
-        // The data is expected to be in a separate file medical_data.json
-        
+        // --- 1. STATE MANAGEMENT ---
         let medicalData = [];
+        let currentCaseId = null;
 
+        // --- 2. THEME ENGINE ---
+        function initTheme() {
+            // Check local storage or system preference
+            const savedTheme = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            setTheme(current === 'dark' ? 'light' : 'dark');
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Icon Logic
+            const sun = document.getElementById('icon-sun');
+            const moon = document.getElementById('icon-moon');
+            if (theme === 'dark') {
+                sun.style.display = 'none';
+                moon.style.display = 'block';
+            } else {
+                sun.style.display = 'block';
+                moon.style.display = 'none';
+            }
+        }
+
+        // --- 3. DATA LOADING ---
         async function loadData() {
+            const loading = document.getElementById('loadingState');
+            const welcome = document.getElementById('welcomeState');
+            
+            welcome.style.display = 'none';
+            loading.style.display = 'flex';
+
             try {
                 const response = await fetch('medical_data.json');
-                if (!response.ok) throw new Error("Could not load data file");
+                if (!response.ok) throw new Error('Failed to load');
                 medicalData = await response.json();
-                renderList();
-                document.querySelector('.welcome-state div:last-child').style.display = 'none';
-            } catch (error) {
-                console.error(error);
-                document.querySelector('.welcome-state').innerHTML = `
-                    <div style="color:#ef4444; font-size:3rem; margin-bottom:1rem">⚠️</div>
-                    <h2>Data Load Error</h2>
-                    <p>Could not load <code>medical_data.json</code>.</p>
-                    <p style="font-size:0.9rem; color:var(--text-muted)">Ensure both <code>index.html</code> and <code>medical_data.json</code> are in the same folder.</p>
-                `;
+                renderSidebar();
+                loading.style.display = 'none';
+                welcome.style.display = 'flex'; // Show welcome back
+            } catch (e) {
+                loading.innerHTML = `<div style="color: #ef4444">Error loading data. <br>Ensure medical_data.json is in the same folder.</div>`;
+                console.error(e);
             }
         }
 
-        // --- THEME LOGIC ---
-        const body = document.documentElement;
-        const sunIcon = document.getElementById('sun-icon');
-        const moonIcon = document.getElementById('moon-icon');
+        // --- 4. RENDER UI ---
+        function renderSidebar(filterText = '') {
+            const listContainer = document.getElementById('caseList');
+            listContainer.innerHTML = '';
 
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            body.setAttribute('data-theme', savedTheme);
-            updateIcons(savedTheme);
-        }
-        function toggleTheme() {
-            const current = body.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-            updateIcons(next);
-        }
-        function updateIcons(theme) {
-            if (theme === 'dark') {
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-            } else {
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
-            }
-        }
-        initTheme();
+            // Get Unique Categories
+            const categories = [...new Set(medicalData.map(item => item.category))].sort();
 
-        // --- APP LOGIC ---
-        const caseListEl = document.getElementById('caseList');
-        const searchInput = document.getElementById('searchInput');
-        const welcomeState = document.getElementById('welcomeState');
-        const caseDetails = document.getElementById('caseDetails');
-        const sidebar = document.getElementById('sidebar');
-        const backdrop = document.getElementById('backdrop');
-
-        function renderList(filter = '') {
-            caseListEl.innerHTML = '';
-            
-            const categories = [...new Set(medicalData.map(item => item.category))];
             let foundAny = false;
 
-            categories.forEach(cat => {
-                const itemsInCat = medicalData.filter(item => 
-                    item.category === cat && 
-                    item.name.toLowerCase().includes(filter.toLowerCase())
+            categories.forEach(category => {
+                // Filter items belonging to this category AND matching search
+                const items = medicalData.filter(item => 
+                    item.category === category && 
+                    item.name.toLowerCase().includes(filterText.toLowerCase())
                 );
 
-                if (itemsInCat.length > 0) {
+                if (items.length > 0) {
                     foundAny = true;
-                    const header = document.createElement('div');
-                    header.className = 'category-header';
-                    header.innerText = cat;
-                    caseListEl.appendChild(header);
+                    // Render Category Header
+                    const catHeader = document.createElement('div');
+                    catHeader.className = 'category-title';
+                    catHeader.textContent = category;
+                    listContainer.appendChild(catHeader);
 
-                    itemsInCat.forEach(item => {
+                    // Render Items
+                    items.forEach(item => {
                         const btn = document.createElement('button');
-                        btn.className = 'case-btn';
-                        btn.onclick = () => selectCase(item.id, btn);
-                        btn.innerHTML = item.name;
-                        caseListEl.appendChild(btn);
+                        btn.className = 'nav-item';
+                        if (item.id === currentCaseId) btn.classList.add('active');
+                        btn.textContent = item.name;
+                        btn.onclick = () => loadCase(item.id);
+                        listContainer.appendChild(btn);
                     });
                 }
             });
 
-            if (!foundAny) caseListEl.innerHTML = '<div style="padding:2rem; text-align:center; color:var(--text-muted); font-size:0.9rem;">No matches found</div>';
-        }
-
-        function selectCase(id, btnElement) {
-            document.querySelectorAll('.case-btn').forEach(b => b.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-
-            const data = medicalData.find(d => d.id === id);
-            
-            document.getElementById('categoryTag').innerText = data.category;
-            document.getElementById('caseTitle').innerText = data.name;
-            
-            const sections = ['clerking', 'history', 'physiology', 'exam', 'inv', 'mgmt', 'complications', 'pearls'];
-            sections.forEach(sec => {
-                document.getElementById(`tab-${sec}`).innerHTML = data[sec] || '<div class="box box-blue">Data coming soon...</div>';
-            });
-
-            welcomeState.style.display = 'none';
-            caseDetails.classList.add('active');
-            
-            // Default to Clerking tab
-            const clerkTabBtn = document.querySelector('.tab-btn.clerking');
-            if(clerkTabBtn) switchTab('clerking', clerkTabBtn);
-
-            if(window.innerWidth <= 768) toggleSidebar(false);
-            
-            document.querySelector('main').scrollTop = 0;
-        }
-
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(`tab-${tabId}`).classList.add('active');
-        }
-
-        function toggleSidebar(forceState) {
-            const isOpen = sidebar.classList.contains('open');
-            const shouldOpen = forceState !== undefined ? forceState : !isOpen;
-            
-            if (shouldOpen) {
-                sidebar.classList.add('open');
-                backdrop.classList.add('open');
-            } else {
-                sidebar.classList.remove('open');
-                backdrop.classList.remove('open');
+            if (!foundAny) {
+                listContainer.innerHTML = '<div style="padding:1rem; color:var(--text-muted); font-size:0.9rem; text-align:center">No matches found</div>';
             }
         }
 
-        searchInput.addEventListener('input', (e) => renderList(e.target.value));
-        
-        // Start Data Load
+        function loadCase(id) {
+            currentCaseId = id;
+            const data = medicalData.find(d => d.id === id);
+            if (!data) return;
+
+            // Highlight Sidebar
+            document.querySelectorAll('.nav-item').forEach(b => {
+                b.classList.toggle('active', b.textContent === data.name);
+            });
+
+            // Populate Header
+            document.getElementById('caseCategory').textContent = data.category;
+            document.getElementById('caseName').textContent = data.name;
+
+            // Populate Tabs
+            // NOTE: The JSON mixes 'physiology' and 'etiology'. We handle both.
+            const physioContent = data.physiology || data.etiology || '<p>Data not available.</p>';
+            
+            const mapping = {
+                'clerking': data.clerking,
+                'history': data.history,
+                'physiology': physioContent,
+                'exam': data.exam,
+                'inv': data.inv,
+                'mgmt': data.mgmt,
+                'complications': data.complications,
+                'pearls': data.pearls
+            };
+
+            for (const [key, content] of Object.entries(mapping)) {
+                const el = document.getElementById(`tab-${key}`);
+                if (el) el.innerHTML = content || '<p>No specific data available.</p>';
+            }
+
+            // Show Content
+            document.getElementById('welcomeState').style.display = 'none';
+            document.getElementById('caseView').style.display = 'block';
+
+            // Reset Tab to first one
+            switchTab('clerking');
+
+            // Close mobile sidebar if open
+            if (window.innerWidth <= 768) closeSidebar();
+            
+            // Scroll to top
+            document.querySelector('.scroll-container').scrollTop = 0;
+        }
+
+        // --- 5. TABS LOGIC ---
+        function switchTab(tabName) {
+            // Update Buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(tabName) || 
+                   (tabName === 'physiology' && (btn.textContent === 'Physiology' || btn.textContent === 'Etiology'))) {
+                    btn.classList.add('active');
+                } else if (tabName === 'clerking' && btn.textContent === 'Clerking') {
+                    btn.classList.add('active');
+                } else if (tabName === 'mgmt' && btn.textContent === 'Management') {
+                    btn.classList.add('active');
+                } else if (tabName === 'inv' && btn.textContent === 'Investigations') {
+                    btn.classList.add('active');
+                } else if (tabName === 'exam' && btn.textContent === 'Examination') {
+                    btn.classList.add('active');
+                } else if (tabName === 'pearls' && btn.textContent === 'Pearls') {
+                    btn.classList.add('active');
+                } else if (tabName === 'complications' && btn.textContent === 'Complications') {
+                    btn.classList.add('active');
+                } else if (tabName === 'history' && btn.textContent === 'History') {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Update Content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`tab-${tabName}`);
+            if (target) target.classList.add('active');
+        }
+
+        // --- 6. EVENT LISTENERS ---
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderSidebar(e.target.value);
+        });
+
+        function openSidebar() {
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        // Init
+        initTheme();
         loadData();
 
     </script>
