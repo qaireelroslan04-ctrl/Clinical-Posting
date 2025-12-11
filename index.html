@@ -21,10 +21,11 @@
             --header-bg: rgba(0, 0, 0, 0.95);
             
             /* Special Box Colors */
-            --box-green-bg: rgba(6, 78, 59, 0.3); --box-green-border: #059669; --box-green-text: #6ee7b7;
-            --box-blue-bg: rgba(30, 58, 138, 0.3); --box-blue-border: #2563eb; --box-blue-text: #93c5fd;
-            --box-red-bg: rgba(127, 29, 29, 0.3); --box-red-border: #dc2626; --box-red-text: #fca5a5;
-            --box-purple-bg: rgba(88, 28, 135, 0.3); --box-purple-border: #9333ea; --box-purple-text: #e9d5ff;
+            --box-green-bg: rgba(6, 78, 59, 0.25); --box-green-border: #059669; --box-green-text: #6ee7b7;
+            --box-blue-bg: rgba(30, 58, 138, 0.25); --box-blue-border: #2563eb; --box-blue-text: #93c5fd;
+            --box-red-bg: rgba(127, 29, 29, 0.25); --box-red-border: #dc2626; --box-red-text: #fca5a5;
+            --box-purple-bg: rgba(88, 28, 135, 0.25); --box-purple-border: #9333ea; --box-purple-text: #e9d5ff;
+            --box-yellow-bg: rgba(120, 53, 15, 0.25); --box-yellow-border: #d97706; --box-yellow-text: #fde68a;
         }
 
         [data-theme="light"] {
@@ -45,6 +46,7 @@
             --box-blue-bg: #eff6ff; --box-blue-border: #3b82f6; --box-blue-text: #1e40af;
             --box-red-bg: #fef2f2; --box-red-border: #ef4444; --box-red-text: #991b1b;
             --box-purple-bg: #f5f3ff; --box-purple-border: #8b5cf6; --box-purple-text: #5b21b6;
+            --box-yellow-bg: #fffbeb; --box-yellow-border: #d97706; --box-yellow-text: #92400e;
         }
 
         /* --- RESET & BASE --- */
@@ -58,6 +60,7 @@
             flex-direction: column;
             overflow: hidden;
             transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
         }
 
         /* --- HEADER --- */
@@ -130,17 +133,18 @@
             width: 100%; text-align: left; padding: 0.85rem 0.75rem;
             background: none; border: none; cursor: pointer;
             color: var(--text-main); font-weight: 500; font-size: 0.95rem;
-            border-radius: 0.5rem; margin-bottom: 2px;
+            transition: all 0.2s;
+            border-radius: 0.375rem; margin-bottom: 2px;
         }
         .case-btn:hover { background-color: var(--bg-input); }
         .case-btn.active {
             background-color: var(--accent-bg); color: var(--accent-text);
-            font-weight: 600;
+            font-weight: 600; border-left: 3px solid var(--accent-color);
         }
 
         /* --- CONTENT --- */
         main {
-            flex: 1; overflow-y: auto; padding: 2rem;
+            flex: 1; overflow-y: auto; padding: 0 1.5rem 1.5rem 1.5rem;
             background-color: var(--bg-body);
             scroll-behavior: smooth;
         }
@@ -149,54 +153,74 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 100%; text-align: center; color: var(--text-muted); padding: 2rem;
         }
+        
+        .loading-state {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; color: var(--text-muted); padding: 2rem;
+        }
 
         .case-details { max-width: 900px; margin: 0 auto; display: none; padding-bottom: 4rem; }
         .case-details.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 
         .details-header {
-            margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem;
+            margin-bottom: 1rem; border-bottom: 1px solid var(--border-color);
+            padding: 2rem 0 1rem 0; display: flex; flex-direction: column; gap: 0.5rem;
         }
         .category-tag { font-size: 0.75rem; color: var(--accent-color); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
         h2 { font-size: 1.75rem; color: var(--text-main); font-weight: 800; line-height: 1.2; margin: 0; }
 
-        .copy-btn {
-            padding: 0.5rem 1rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 0.5rem;
-            cursor: pointer; color: var(--text-muted); font-size: 0.85rem; font-weight: 600;
-            display: flex; align-items: center; gap: 6px; width: fit-content;
-        }
-
-        /* --- TABS --- */
+        /* --- FLOATING TABS (Glassmorphism) --- */
         .tabs-wrapper {
             position: sticky; top: 0; z-index: 10;
-            background: var(--bg-body); padding-bottom: 1rem; margin-bottom: 0.5rem;
+            padding: 1rem 0 0.5rem 0;
+            background: transparent;
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+            margin: 0 -1.5rem 1rem -1.5rem; 
+            padding-left: 1.5rem; padding-right: 1.5rem;
         }
         .tabs {
-            display: flex; background: var(--bg-input); padding: 0.25rem;
-            border-radius: 0.75rem; overflow-x: auto; gap: 0.25rem;
-            border: 1px solid var(--border-color);
+            display: flex; padding: 0.25rem;
+            overflow-x: auto; gap: 0.5rem;
             scrollbar-width: none;
         }
         .tabs::-webkit-scrollbar { display: none; }
         
         .tab-btn {
-            flex: 1; padding: 0.6rem 1rem; border: none; background: none; cursor: pointer;
-            border-radius: 0.5rem; font-weight: 600; color: var(--text-muted);
-            font-size: 0.9rem; white-space: nowrap; min-width: fit-content;
+            flex: 0 0 auto; padding: 0.6rem 1rem; 
+            border: 1px solid var(--border-color); background: var(--bg-input); 
+            cursor: pointer; border-radius: 2rem; 
+            font-weight: 600; color: var(--text-muted);
+            font-size: 0.85rem; white-space: nowrap; 
+            transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        .tab-btn.active { background: var(--bg-card); color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .tab-btn:hover { background: var(--bg-card); color: var(--text-main); transform: translateY(-1px); }
+        .tab-btn.active { 
+            background: var(--bg-card); color: var(--text-main); 
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+            transform: translateY(-2px);
+        }
         
-        [data-theme="dark"] .tab-btn.clerking.active { color: #6ee7b7; background: rgba(6, 78, 59, 0.4); }
-        [data-theme="light"] .tab-btn.clerking.active { color: #065f46; background: #d1fae5; }
-        [data-theme="dark"] .tab-btn.pearls.active { color: #c084fc; background: rgba(88, 28, 135, 0.4); }
-        [data-theme="light"] .tab-btn.pearls.active { color: #5b21b6; background: #ede9fe; }
+        /* Colored Active States */
+        [data-theme="dark"] .tab-btn.clerking.active { color: #6ee7b7; border-color: #059669; background: #064e3b; }
+        [data-theme="light"] .tab-btn.clerking.active { color: #065f46; border-color: #10b981; background: #d1fae5; }
+        
+        [data-theme="dark"] .tab-btn.complications.active { color: #fca5a5; border-color: #dc2626; background: #7f1d1d; }
+        [data-theme="light"] .tab-btn.complications.active { color: #991b1b; border-color: #ef4444; background: #fef2f2; }
+
+        [data-theme="dark"] .tab-btn.pearls.active { color: #c084fc; border-color: #9333ea; background: #581c87; }
+        [data-theme="light"] .tab-btn.pearls.active { color: #5b21b6; border-color: #8b5cf6; background: #f5f3ff; }
 
         /* --- CONTENT CARD --- */
         .content-card {
             background: var(--bg-card); border: 1px solid var(--border-color);
             border-radius: 1rem; padding: 1.5rem; min-height: 400px;
         }
-        .tab-content { display: none; line-height: 1.7; color: var(--text-main); font-size: 1rem; }
+        .tab-content { display: none; line-height: 1.8; color: var(--text-main); font-size: 1.05rem; }
         .tab-content.active { display: block; animation: fadeIn 0.2s; }
 
         h3 {
@@ -207,6 +231,7 @@
         ul { padding-left: 1.25rem; margin-bottom: 1.5rem; }
         li { margin-bottom: 0.6rem; }
         strong { color: var(--text-main); font-weight: 700; }
+        em { color: var(--text-muted); font-style: normal; font-weight: 600; font-size: 0.9em; }
 
         /* Special Boxes */
         .box { padding: 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; border-left: 4px solid; background: var(--bg-box); }
@@ -214,7 +239,8 @@
         .box-green { background: var(--box-green-bg); border-color: var(--box-green-border); color: var(--box-green-text); }
         .box-blue { background: var(--box-blue-bg); border-color: var(--box-blue-border); color: var(--box-blue-text); }
         .box-purple { background: var(--box-purple-bg); border-color: var(--box-purple-border); color: var(--box-purple-text); }
-        .box-title { display: block; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; opacity: 0.9; }
+        .box-yellow { background: var(--box-yellow-bg); border-color: var(--box-yellow-border); color: var(--box-yellow-text); }
+        .box-title { display: block; font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 0.5rem; opacity: 0.9; letter-spacing: 0.05em; }
 
         .pearl-box {
             background-color: var(--bg-box); border: 1px solid var(--box-purple-border);
@@ -235,9 +261,10 @@
             aside { position: absolute; height: 100%; width: 85%; transform: translateX(-100%); }
             aside.open { transform: translateX(0); box-shadow: 10px 0 25px rgba(0,0,0,0.5); }
             .backdrop.open { display: block; }
-            main { padding: 1rem 1rem 6rem 1rem; }
-            .content-card { padding: 1rem; border: none; background: transparent; padding: 0; }
-            .box, .pearl-box { padding: 1rem; }
+            main { padding: 0 1rem 6rem 1rem; }
+            .content-card { padding: 0; border: none; background: transparent; }
+            .box, .pearl-box { padding: 1.25rem; }
+            .tabs-wrapper { margin: 0 -1rem 1rem -1rem; padding-left: 1rem; padding-right: 1rem; }
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -273,7 +300,12 @@
             <div id="welcomeState" class="welcome-state">
                 <div style="font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.3;">🩻</div>
                 <h2>Clinical Clerkship Companion</h2>
-                <p>Select a disease to view detailed notes.<br>Optimized for ward rounds.</p>
+                <p>Select a disease from the sidebar to view details.</p>
+                <div style="margin-top: 1rem; color: #64748b; font-size: 0.9rem;">Loading database...</div>
+            </div>
+            
+            <div id="loadingState" class="loading-state">
+                <p>Loading medical data...</p>
             </div>
 
             <div id="caseDetails" class="case-details">
@@ -282,21 +314,17 @@
                         <div id="categoryTag" class="category-tag">Category</div>
                         <h2 id="caseTitle">Condition Name</h2>
                     </div>
-                    <div class="header-actions">
-                        <button class="copy-btn" onclick="copyContent()">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
-                            <span>Copy Data</span>
-                        </button>
-                    </div>
                 </div>
 
                 <div class="tabs-wrapper">
                     <div class="tabs">
                         <button class="tab-btn active clerking" onclick="switchTab('clerking', this)">📝 Clerking</button>
-                        <button class="tab-btn" onclick="switchTab('history', this)">History</button>
-                        <button class="tab-btn" onclick="switchTab('exam', this)">Exam</button>
-                        <button class="tab-btn" onclick="switchTab('inv', this)">Investigations</button>
-                        <button class="tab-btn" onclick="switchTab('mgmt', this)">Management</button>
+                        <button class="tab-btn" onclick="switchTab('history', this)">📜 History</button>
+                        <button class="tab-btn" onclick="switchTab('physiology', this)">🧬 Physiology & Etiology</button>
+                        <button class="tab-btn" onclick="switchTab('exam', this)">🩺 Examination</button>
+                        <button class="tab-btn" onclick="switchTab('inv', this)">🔬 Investigations</button>
+                        <button class="tab-btn" onclick="switchTab('mgmt', this)">💊 Management</button>
+                        <button class="tab-btn complications" onclick="switchTab('complications', this)">⚠️ Complications</button>
                         <button class="tab-btn pearls" onclick="switchTab('pearls', this)">💎 Pearls</button>
                     </div>
                 </div>
@@ -304,9 +332,11 @@
                 <div class="content-card">
                     <div id="tab-clerking" class="tab-content active"></div>
                     <div id="tab-history" class="tab-content"></div>
+                    <div id="tab-physiology" class="tab-content"></div>
                     <div id="tab-exam" class="tab-content"></div>
                     <div id="tab-inv" class="tab-content"></div>
                     <div id="tab-mgmt" class="tab-content"></div>
+                    <div id="tab-complications" class="tab-content"></div>
                     <div id="tab-pearls" class="tab-content"></div>
                 </div>
             </div>
@@ -314,6 +344,31 @@
     </div>
 
     <script>
+        // --- DATA FETCHER ---
+        // In this single file version, the fetch logic is replaced by a direct variable assignment
+        // The data is expected to be in a separate file medical_data.json
+        
+        let medicalData = [];
+
+        async function loadData() {
+            try {
+                const response = await fetch('medical_data.json');
+                if (!response.ok) throw new Error("Could not load data file");
+                medicalData = await response.json();
+                renderList();
+                document.querySelector('.welcome-state div:last-child').style.display = 'none';
+            } catch (error) {
+                console.error(error);
+                document.querySelector('.welcome-state').innerHTML = `
+                    <div style="color:#ef4444; font-size:3rem; margin-bottom:1rem">⚠️</div>
+                    <h2>Data Load Error</h2>
+                    <p>Could not load <code>medical_data.json</code>.</p>
+                    <p style="font-size:0.9rem; color:var(--text-muted)">Ensure both <code>index.html</code> and <code>medical_data.json</code> are in the same folder.</p>
+                `;
+            }
+        }
+
+        // --- THEME LOGIC ---
         const body = document.documentElement;
         const sunIcon = document.getElementById('sun-icon');
         const moonIcon = document.getElementById('moon-icon');
@@ -323,7 +378,6 @@
             body.setAttribute('data-theme', savedTheme);
             updateIcons(savedTheme);
         }
-
         function toggleTheme() {
             const current = body.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -331,7 +385,6 @@
             localStorage.setItem('theme', next);
             updateIcons(next);
         }
-
         function updateIcons(theme) {
             if (theme === 'dark') {
                 sunIcon.style.display = 'none';
@@ -343,240 +396,18 @@
         }
         initTheme();
 
-        // --- FULL MEDICAL DATA (23 Items) ---
-        const medicalData = [
-            // === HEPATOBILIARY (7 Conditions) ===
-            {
-                id: "cholecystitis", category: "Hepatobiliary", name: "Acute Cholecystitis",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the pain radiate to your right shoulder/back?" (Boas Sign - Phrenic nerve irritation C3,4,5)</li><li>"Did this start after a fatty meal?" (CCK release contracts GB against obstruction)</li><li>"How long has the pain lasted? >6 hours?" (Distinguishes from Biliary Colic)</li><li>"Have you had fevers or shivers?" (Suggests inflammation/infection)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Biliary Colic:</strong> Pain <6h, No fever, Normal WBC.</li><li><strong>Peptic Ulcer:</strong> Burning epigastric pain, association with hunger/food.</li><li><strong>Right Lower Lobe Pneumonia:</strong> Respiratory symptoms, fever, decreased breath sounds.</li><li><strong>Acute Pancreatitis:</strong> Radiates to back, amylase high.</li><li><strong>Fitz-Hugh-Curtis Syndrome:</strong> Perihepatitis associated with PID.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3>The primary symptom typically begins as diffuse or periumbilical abdominal pain that eventually localizes to the Right Upper Quadrant (RUQ). The pain is constant and severe, lasting >6 hours. It may radiate to the right scapula or shoulder tip (referred pain via phrenic nerve). <br><strong>Aggravating Factors:</strong> Pain may worsen when taking a deep breath, walking, squatting, or riding in a car (peritoneal irritation). <br><strong>Associated Symptoms:</strong> Anorexia, nausea, vomiting, fever, chills/rigors. <br><h3>Risk Factors (5 F's)</h3><ul class="vertical-list"><li><strong>Fat:</strong> Obesity (BMI >30)</li><li><strong>Female:</strong> Estrogen increases cholesterol saturation</li><li><strong>Forty:</strong> Age >40 years</li><li><strong>Fertile:</strong> Pregnancy/OCP use</li><li><strong>Fair:</strong> Caucasian ethnicity</li></ul><strong>Other Risks:</strong> Rapid weight loss, Hemolytic anemia (Pigment stones).`,
-                exam: `<h3>General Inspection</h3>Tachycardia, Low grade fever (Pyrexia). Patient lies still to minimize peritoneal irritation. <br><h3>Abdominal Examination</h3>Tenderness and guarding in RUQ. <br><strong>Murphy's Sign:</strong> Inspiratory arrest on deep palpation of RUQ (test is positive only if patient stops breathing due to pain, and test is negative on left side). <br><strong>Boas' Sign:</strong> Hyperaesthesia below the right scapula (T9-T11 dermatomes). <br><strong>Negative Findings to Mention:</strong> No jaundice (unless Mirizzi syndrome or CBD stone present), No generalized peritonitis (unless perforated).`,
-                inv: `<h3>Bedside</h3>Urine Dipstick (Exclude renal colic/UTI/DKA). ECG (Rule out inferior MI which can present as epigastric pain). <br><h3>Laboratory</h3><strong>FBC:</strong> Leukocytosis (WBC >10, neutrophilia). <br><strong>CRP:</strong> Elevated (Inflammatory marker). <br><strong>LFTs:</strong> Usually normal or mild non-specific derangement (ALP/GGT). Significant Bilirubin rise suggests Choledocholithiasis. <br><strong>Amylase/Lipase:</strong> To exclude Gallstone Pancreatitis. <br><h3>Imaging</h3><strong>USG Abdomen (Gold Standard):</strong> Findings: <br>- Thickened GB wall (>3mm) <br>- Pericholecystic fluid <br>- Presence of gallstones/sludge <br>- Positive sonographic Murphy's sign <br>- Distended gallbladder (>4cm width). <br><strong>HIDA Scan:</strong> Functional scan. Used if USG equivocal. Non-visualization of GB suggests cystic duct obstruction. <br><strong>CT Abdomen:</strong> Not first line, but can show complications like emphysematous cholecystitis or gangrene.`,
-                mgmt: `<h3>Resuscitation</h3>NBM (Nil By Mouth) for bowel rest. IV Fluids (Crystaloids e.g., Hartmann's) to correct dehydration. Analgesia (NSAIDs like Diclofenac PR/IM are superior for biliary pain; Opioids like Morphine if severe). Antiemetics. <br><h3>Medical</h3>IV Antibiotics (Broad spectrum e.g. Cefuroxime + Metronidazole covering Gram-negatives like E. coli/Klebsiella and Anaerobes). <br><h3>Surgical (Definitive)</h3><strong>Early Laparoscopic Cholecystectomy:</strong> Recommended within 72 hours of onset (or within 1 week). Reduces hospital stay compared to interval surgery. <br><h3>Interventional</h3><strong>Percutaneous Cholecystostomy:</strong> USG-guided drainage of the gallbladder. Reserved for high-risk surgical candidates (Tokyo Grade III, ICU patients, severe comorbidities) to "cool down" the inflammation before potential later surgery.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Tokyo Guidelines 2018 (Severity Grading)</div><ul class="vertical-list"><li><strong>Grade I (Mild):</strong> Healthy patient, no organ dysfunction. -> Early Lap Chole.</li><li><strong>Grade II (Moderate):</strong> WBC >18, palpable tender mass, duration >72h, local inflammation. -> Antibiotics/Drainage then Surgery.</li><li><strong>Grade III (Severe):</strong> Organ Dysfunction (Hypotension, confusion, respiratory failure). -> Urgent Drainage (Cholecystostomy) + ICU.</li></ul></div><div class="pearl-box"><div class="pearl-title">💎 Mirizzi Syndrome</div>A rare complication where a large gallstone impacted in the Cystic duct or Hartmann's pouch causes extrinsic compression of the Common Hepatic Duct, leading to obstructive jaundice.</div>`
-            },
-            {
-                id: "gallstones", category: "Hepatobiliary", name: "Gallstones (Biliary Colic)",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the pain come and go?"</li><li>"Does it go away <em>completely</em> between attacks?" (Crucial distinction from Cholecystitis)</li><li>"Is your urine dark or eyes yellow?" (Rule out CBD stone)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Acute Cholecystitis:</strong> Fever, pain >6h, inflammatory markers.</li><li><strong>Gastritis/GERD:</strong> Burning pain, relation to acid/spicy food.</li><li><strong>Pancreatitis:</strong> Back radiation, severe constant pain.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3>Colicky RUQ or Epigastric pain, often triggered post-prandially (especially fatty/greasy food). Caused by temporary obstruction of the cystic duct by a stone. <br><strong>Duration:</strong> Pain typically lasts minutes to hours but <6 hours. It resolves completely between attacks. <br><strong>Systemic:</strong> No fever, no shivers, no sweats. <br><strong>Associated:</strong> Nausea and vomiting are common during attacks.`,
-                exam: `<h3>Signs</h3>Abdomen is soft and non-tender between attacks. Negative Murphy's sign. <br><strong>Systemic:</strong> Afebrile, stable vitals. No jaundice.`,
-                inv: `<h3>Laboratory</h3>Normal WBC, Normal CRP, and Normal LFTs (Crucial negative findings to distinguish from Acute Cholecystitis or Cholangitis). <br><h3>Imaging</h3><strong>USG Abdomen:</strong> Shows gallstones with acoustic shadowing ("stones in the gallbladder"). Gallbladder wall is thin/normal (<3mm). No pericholecystic fluid. CBD is normal caliber (<6mm).`,
-                mgmt: `<h3>Conservative</h3>Analgesia (NSAIDs like Diclofenac are first line). Dietary advice (Low fat diet to reduce CCK stimulation). <br><h3>Surgical</h3><strong>Elective Laparoscopic Cholecystectomy:</strong> Recommended to prevent future complications like acute cholecystitis, pancreatitis, or cholangitis.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Saint's Triad</div>The "unlucky" triad of three common conditions often found together in elderly patients: <strong>Gallstones + Diverticulosis + Hiatus Hernia</strong>.</div>`
-            },
-            {
-                id: "pancreatitis", category: "Hepatobiliary", name: "Acute Pancreatitis",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the pain go straight through to your back?" (Transfixion)</li><li>"Does sitting forward make the pain easier?" (Tripod position relieves retroperitoneal stretch)</li><li>"Do you drink alcohol? How much?"</li><li>"History of gallstones?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Perforated PUD:</strong> Air under diaphragm on CXR, history of NSAIDs.</li><li><strong>Acute Cholecystitis:</strong> RUQ pain, Murphy's +.</li><li><strong>Myocardial Infarction:</strong> Inferior MI can present as epigastric pain (always do ECG).</li><li><strong>Ruptured AAA:</strong> Pulsatile mass, shock, history of vascular disease.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3>Primary symptom is sudden onset, severe, constant abdominal pain in the upper belly (epigastric) that radiates to the back or shoulders ("boring" pain). Pain is sometimes worse after eating. <br><strong>Associated Symptoms:</strong> Nausea, profuse vomiting (vomiting does not relieve pain), fever, and a fast heartbeat (tachycardia). <br><h3>Causes (GET SMASHED)</h3><ul class="vertical-list"><li><strong>G</strong>allstones (50% - Commonest)</li><li><strong>E</strong>thanol (30% - Alcohol)</li><li><strong>T</strong>rauma</li><li><strong>S</strong>teroids</li><li><strong>M</strong>umps / Malignancy</li><li><strong>A</strong>utoimmune (IgG4)</li><li><strong>S</strong>corpion sting</li><li><strong>H</strong>ypercalcemia / Hyperlipidemia</li><li><strong>E</strong>RCP (Iatrogenic)</li><li><strong>D</strong>rugs (Azathioprine, Thiazides, Valproate)</li></ul>`,
-                exam: `<h3>General</h3>Dehydration (dry tongue, poor turgor), Tachycardia, Hypotension (Shock due to third space fluid loss). Tachypnea. Jaundice (if gallstone obstruction). <br><h3>Abdomen</h3>Marked epigastric tenderness and guarding. The abdomen may feel tender to the touch. Reduced or absent bowel sounds (Paralytic Ileus). <br><strong>Red Flags (Late/Severe):</strong> <br>- <strong>Cullen's Sign:</strong> Periumbilical bruising (hemoperitoneum). <br>- <strong>Grey Turner's Sign:</strong> Flank bruising (retroperitoneal hemorrhage). <br>Both indicate severe necrotizing pancreatitis with high mortality.`,
-                inv: `<h3>Laboratory</h3><strong>Serum Amylase:</strong> >3x Upper Limit of Normal (Non-specific, rises fast, falls fast). <br><strong>Serum Lipase:</strong> >3x Upper Limit of Normal (More specific and stays elevated longer - preferred). <br><strong>ABG:</strong> Check Lactate, Hypoxia, Acidosis. <br><strong>Calcium:</strong> Hypocalcemia (Fat saponification binds calcium). <br><strong>LFTs:</strong> ALT >150 suggests Gallstone etiology. <br><h3>Imaging</h3><strong>USG Abdomen:</strong> Essential first line to rule out gallstones as cause. <br><strong>CT Pancreas (Contrast):</strong> CONTRAINDICATED for initial diagnosis (can be normal early on). Done after 48-72 hours to assess extent of necrosis or local complications (pseudocyst).`,
-                mgmt: `<h3>Resuscitation (Mainstay)</h3><strong>Aggressive IV Fluids:</strong> (Hartmann's 250-500ml/hr) guided by urine output (>0.5ml/kg/hr) to maintain pancreatic perfusion. <br><h3>Medical</h3><strong>Analgesia:</strong> Opioids (e.g. Morphine/Fentanyl). <strong>Antiemetics.</strong> <strong>Nutrition:</strong> Early enteral feeding (NG/NJ tube) is preferred over NBM (preserves gut mucosal barrier, reduces sepsis). Antibiotics are NOT routine; used only if infection is proven (e.g. infected necrosis). <br><h3>Specific</h3><strong>ERCP:</strong> Urgent (<24h) if cholangitis or biliary obstruction is present. <strong>Cholecystectomy:</strong> Performed within the same admission for mild gallstone pancreatitis to prevent recurrence.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Glasgow Imrie Score (PANCREAS)</div>Mnemonic to assess severity within 48h:<br><strong>P</strong>aO2 <8kPa<br><strong>A</strong>ge >55<br><strong>N</strong>eutrophils >15<br><strong>C</strong>alcium <2<br><strong>R</strong>enal (Urea) >16<br><strong>E</strong>nzymes (LDH) >600<br><strong>A</strong>lbumin <32<br><strong>S</strong>ugar >10<br>Score ≥3 = Severe Pancreatitis (ICU admission).</div><div class="pearl-box"><div class="pearl-title">💎 Pancreatic Divisum</div>Most common congenital anomaly of the pancreas (failure of fusion of dorsal and ventral ducts). Can predispose to recurrent pancreatitis.</div>`
-            },
-            {
-                id: "head_pancreas", category: "Hepatobiliary", name: "Ca Head of Pancreas",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Is your skin yellow? Is it painful?" (Painless jaundice = Cancer until proven otherwise)</li><li>"Is your urine dark and stool pale?" (Obstructive/Post-hepatic jaundice)</li><li>"Is your skin itchy?" (Pruritus from bile salts)</li><li>"Any unintentional weight loss?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Choledocholithiasis:</strong> Painful jaundice, history of stones/colic.</li><li><strong>Cholangiocarcinoma:</strong> Jaundice, weight loss, similar presentation.</li><li><strong>Benign Stricture:</strong> Previous surgery/ERCP/Pancreatitis.</li><li><strong>Viral Hepatitis:</strong> Prodrome, travel history.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3>Classic presentation is <strong>Painless Progressive Obstructive Jaundice</strong>. <br><strong>Symptoms:</strong> Yellow skin/eyes, dark tea-colored urine (conjugated bilirubin), pale clay-colored stools (absence of stercobilin). <strong>Pruritus:</strong> Severe itching due to bile salt deposition. <strong>Constitutional:</strong> Significant weight loss, Anorexia (loss of appetite), Fatigue. <strong>Pain:</strong> Epigastric/Back pain is a late sign suggesting retroperitoneal invasion. <strong>New Onset Diabetes:</strong> In an elderly patient without family history is a red flag.`,
-                exam: `<h3>Signs</h3>Deep jaundice (yellow sclera). Scratch marks (excoriations). Cachexia (muscle wasting). <br><strong>Courvoisier's Sign:</strong> A palpable, non-tender gallbladder in a jaundiced patient is unlikely to be due to gallstones. It implies malignancy (likely Ca Head of Pancreas or Distal Cholangiocarcinoma) because stones typically cause a fibrotic, shrunken GB that cannot distend. <br><strong>Abdomen:</strong> Hepatomegaly (metastases or biliary backup). Ascites (late peritoneal spread). <br><strong>Supraclavicular Node:</strong> Virchow's node (Troisier's sign).`,
-                inv: `<h3>Laboratory</h3><strong>LFTs:</strong> Cholestatic pattern (Markedly elevated ALP/GGT and Direct Bilirubin; mild AST/ALT elevation). <br><strong>Tumor Marker:</strong> CA 19-9 (also raised in cholangitis/biliary obstruction, so check after drainage). <br><strong>Coagulation:</strong> Prolonged INR (Vitamin K malabsorption due to lack of bile). Give IV Vit K. <br><h3>Imaging</h3><strong>CT Pancreas (Triple Phase):</strong> Gold standard. Look for hypodense mass in head of pancreas. <strong>"Double Duct Sign":</strong> Dilatation of both the Common Bile Duct and the Pancreatic Duct. Staging for vascular invasion (SMV/SMA/Portal Vein) determines resectability. <br><strong>EUS (Endoscopic Ultrasound):</strong> For biopsy (FNA).`,
-                mgmt: `<h3>Curative (Resectable - 20%)</h3><strong>Whipple's Procedure (Pancreaticoduodenectomy):</strong> Removal of head of pancreas, duodenum, gallbladder, distal bile duct, and sometimes distal stomach. Reconstruction via Gastrojejunostomy, Hepaticojejunostomy, and Pancreaticojejunostomy. Only 15-20% of patients are resectable at presentation. <br><h3>Palliative (Unresectable)</h3><strong>ERCP Stenting:</strong> Placement of a metal stent to relieve biliary obstruction (treats jaundice/itch). <strong>Gastrojejunostomy:</strong> Surgical bypass if duodenal obstruction causes vomiting. <strong>Enzyme Replacement:</strong> Creon for steatorrhea. <strong>Pain Control:</strong> Celiac plexus block. <strong>Chemotherapy:</strong> Gemcitabine-based regimens or FOLFIRINOX.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Trousseau's Sign of Malignancy</div>Migratory thrombophlebitis (spontaneous blood clots in superficial veins) associated with visceral cancer, especially pancreatic.</div><div class="pearl-box"><div class="pearl-title">💎 Double Duct Sign</div>Dilatation of both the Common Bile Duct and the Pancreatic Duct on CT/ERCP. Highly suggestive of Pancreatic Head tumor.</div>`
-            },
-            {
-                id: "hcc", category: "Hepatobiliary", name: "Hepatocellular Carcinoma (HCC)",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Do you have Hepatitis B or C?"</li><li>"Do you drink alcohol heavily?"</li><li>"Did your belly swell up recently?" (Decompensation)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Liver Metastasis:</strong> More common than primary HCC (look for primary in Colon, Breast, Lung).</li><li><strong>Cirrhosis (Decompensated):</strong> Without tumor.</li><li><strong>Hemangioma:</strong> Benign, incidental finding.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3>Often asymptomatic until late stages. May present with RUQ pain, weight loss, or sudden <strong>decompensation</strong> of known cirrhosis (e.g., new ascites, jaundice, encephalopathy, variceal bleed). <br><strong>Risk Factors:</strong> Cirrhosis (Alcohol/NASH), Hepatitis B Carrier (can cause HCC without cirrhosis), Hepatitis C, Aflatoxin exposure (Aspergillus in grains), Hemochromatosis.`,
-                exam: `<h3>Signs</h3><strong>Liver:</strong> Hepatomegaly (hard, craggy, irregular border). Arterial bruit over liver. <br><strong>Stigmata of Chronic Liver Disease:</strong> Spider naevi, Palmar erythema, Gynecomastia, Caput medusae, Dupuytren's contracture, Parotid swelling. <br><strong>Decompensation:</strong> Ascites, Jaundice, Asterixis (flapping tremor).`,
-                inv: `<h3>Laboratory</h3><strong>Alpha-fetoprotein (AFP):</strong> >400 ng/ml is diagnostic in appropriate radiological context. LFTs (Cirrhotic pattern: Low Albumin, High INR, High Bilirubin). Hepatitis Screen. <br><h3>Imaging</h3><strong>Multiphasic CT/MRI Liver:</strong> The hallmark diagnostic pattern is <strong>Arterial phase enhancement</strong> (tumor lights up) followed by <strong>Venous phase washout</strong> (tumor becomes darker than liver). Biopsy is often NOT needed if these radiological criteria are met in a cirrhotic liver (risk of seeding).`,
-                mgmt: `<h3>Curative Options</h3><strong>Resection (Hepatectomy):</strong> Only if non-cirrhotic or very good liver function (Child-Pugh A). <br><strong>Transplant:</strong> For cirrhotic patients meeting <strong>Milan Criteria</strong> (Single lesion <5cm OR up to 3 lesions each <3cm, no vascular invasion/mets). <br><h3>Locoregional Therapies</h3><strong>RFA (Radiofrequency Ablation):</strong> Curative for small tumors. <strong>TACE (Transarterial Chemoembolization):</strong> For intermediate stage. <br><h3>Systemic Palliative</h3><strong>Sorafenib / Lenvatinib:</strong> Tyrosine kinase inhibitors for advanced disease. Immunotherapy (Atezolizumab + Bevacizumab).`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Child-Pugh Score</div>Assessment of prognosis in cirrhosis. Mnemonic "Pour Another Beer At Eleven":<br><strong>P</strong>T (INR)<br><strong>A</strong>scites<br><strong>B</strong>ilirubin<br><strong>A</strong>lbumin<br><strong>E</strong>ncephalopathy<br>Class A/B/C determines surgical fitness.</div>`
-            },
-            {
-                id: "cholangio", category: "Hepatobiliary", name: "Cholangiocarcinoma",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Are you jaundiced?"</li><li>"Do you have Ulcerative Colitis?" (PSC link)</li><li>"History of liver flukes?" (Asian population)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Pancreatic Cancer:</strong> Similar presentation.</li><li><strong>Choledocholithiasis:</strong> Painful.</li><li><strong>Primary Sclerosing Cholangitis (PSC):</strong> Strictures.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3>Presentation depends on location. <strong>Extrahepatic:</strong> Painless obstructive jaundice, pruritus, pale stools, dark urine. <strong>Intrahepatic:</strong> Vague RUQ pain, weight loss, mass (late jaundice). <br><strong>Risk Factors:</strong> Primary Sclerosing Cholangitis (PSC - strongly linked to Ulcerative Colitis), Choledochal cysts, Liver Flukes (<em>Clonorchis sinensis</em>, <em>Opisthorchis viverrini</em>), Hepatitis B/C, Hepatolithiasis.`,
-                exam: `<h3>Signs</h3>Deep Jaundice. Hepatomegaly. Scratch marks. <br><strong>Gallbladder:</strong> <br>- If tumor is <strong>Distal</strong> (below cystic duct): Palpable GB (Courvoisier's sign positive). <br>- If tumor is <strong>Hilar/Klatskin</strong> (above cystic duct): Non-palpable/Collapsed GB.`,
-                inv: `<h3>Labs</h3>Cholestatic LFTs. <strong>Tumor Markers:</strong> CA 19-9 (Elevated in ~80%), CEA. IgG4 (rule out autoimmune cholangiopathy). <br><h3>Imaging</h3><strong>MRCP:</strong> Investigation of choice for biliary tree mapping. <strong>CT Abdomen:</strong> For staging and vascular involvement. <strong>ERCP:</strong> Diagnostic (brushings for cytology - often low sensitivity) and Therapeutic (stenting).`,
-                mgmt: `<h3>Surgical (Only curative option)</h3><strong>Distal Tumors:</strong> Whipple's Procedure (Pancreaticoduodenectomy). <br><strong>Hilar (Klatskin) Tumors:</strong> Major Hepatectomy + Caudate lobectomy + Roux-en-Y Hepaticojejunostomy. <br><strong>Intrahepatic:</strong> Hepatic resection. <br><h3>Palliative & Other Treatments</h3><strong>Biliary Drainage:</strong> Involves placing a tube into the bile duct (via ERCP or Percutaneous Transhepatic route - PTC) to relieve obstruction and jaundice. <strong>Radiofrequency Ablation (RFA):</strong> Uses electric current to heat and destroy cancer cells (for unresectable tumors). <strong>Chemotherapy:</strong> Gemcitabine + Cisplatin. <strong>Clinical Trials:</strong> New treatments are often tested for unresectable cases.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Klatskin Tumor</div>Perihilar cholangiocarcinoma located at the junction of the right and left hepatic ducts. They cause jaundice but a <strong>collapsed gallbladder</strong> (below the obstruction).</div>`
-            },
-            {
-                id: "gb_ca", category: "Hepatobiliary", name: "Gallbladder Carcinoma",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Do you have a long history of gallstones?"</li><li>"Have you had constant RUQ pain and weight loss?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Chronic Cholecystitis</strong>.</li><li><strong>Xanthogranulomatous Cholecystitis</strong> (Mimics cancer on CT).</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3><strong>Incidental:</strong> Often found incidentally during Cholecystectomy for gallstones (1%). <br><strong>Symptomatic (Advanced):</strong> Persistent RUQ pain (mimics chronic cholecystitis but unremitting), weight loss, anorexia, nausea. <strong>Jaundice:</strong> Indicates biliary tree invasion (poor prognosis). <br><strong>Risk Factors:</strong> Gallstones (present in 80%), <strong>Porcelain Gallbladder</strong> (calcified wall), Gallbladder Polyps >1cm, Chronic <em>Salmonella typhi</em> carrier, Anomalous pancreaticobiliary junction.`,
-                exam: `<h3>Signs</h3>Often unremarkable in early stages. <strong>Advanced:</strong> Hard, irregular RUQ Mass. Jaundice (if CBD obstruction occurs). Virchow's Node (Supraclavicular lymphadenopathy - metastasis).`,
-                inv: `<h3>Imaging</h3><strong>Ultrasound:</strong> Mass replacing the gallbladder, or focal wall thickening >3mm/irregularity. <strong>CT/MRI:</strong> For staging, liver invasion (Segments IVb/V), and nodal spread. <br><h3>Tumor Markers</h3><strong>CEA</strong> and <strong>CA 19-9:</strong> Often elevated but non-specific.`,
-                mgmt: `<h3>Surgical (Stage Dependent)</h3><strong>Simple Cholecystectomy:</strong> Curative for very early tumors confined to mucosa (Tis and T1a only). <br><strong>Extended Cholecystectomy:</strong> For muscle invasive disease (>T1b). Involves removal of the gallbladder, en-bloc resection of adjacent liver tissue (Segments IVb/V), and regional lymphadenectomy (portal hepatis nodes). <br><h3>Adjuvant & Palliative</h3><strong>Adjuvant Therapy:</strong> Chemotherapy (Gemcitabine/Cisplatin) +/- Radiation after surgery to prevent recurrence. <br><strong>Treatment for Unresectable/Metastatic:</strong> Systemic therapy (Chemotherapy, Targeted therapy). Palliative biliary drainage (Stenting) if jaundiced. <br><strong>Clinical Trials:</strong> New types of treatment are often tested in clinical trials for unresectable, metastatic, or recurrent cancer.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Porcelain Gallbladder</div>Calcification of the gallbladder wall due to chronic inflammation. Historically thought to have very high cancer risk (>20%), recent studies suggest risk is lower (~6%), but prophylactic cholecystectomy is still often recommended.</div>`
-            },
-
-            // === UPPER GI (4 Conditions) ===
-            {
-                id: "ugib", category: "Upper GI", name: "Upper GI Bleeding",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Is the vomit bright red or coffee grounds?"</li><li>"Is stool black and tarry?" (Melaena - ask about distinct foul smell)</li><li>"History of Liver disease/Alcohol?" (Varices)</li><li>"Do you take NSAIDs/Aspirin/Blood thinners?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Peptic Ulcer Disease:</strong> 50% of cases.</li><li><strong>Esophageal Varices:</strong> Stigmata of liver disease.</li><li><strong>Mallory-Weiss Tear:</strong> History of forceful retching.</li><li><strong>Gastric Cancer:</strong> Weight loss, cachexia.</li><li><strong>Dieulafoy's Lesion:</strong> Massive painless bleed.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3><strong>Hematemesis:</strong> Vomiting fresh blood (active bleed) or "coffee-ground" material (altered blood). <br><strong>Melaena:</strong> Black, tarry, foul-smelling stool (digested blood). <br><strong>Symptoms of Anemia:</strong> Dizziness, palpitations, syncope, angina (indicates >15% blood loss). <br><strong>Risk Factors:</strong> H. pylori, NSAIDs/Steroids/Anticoagulants, Alcohol, Smoking, Previous UGIB.`,
-                exam: `<h3>Hemodynamics</h3>Assess for Shock: Tachycardia, Hypotension, Cool peripheries. Capillary refill time. <br><h3>Stigmata of Chronic Liver Disease</h3>Jaundice, Spider Naevi, Palmar Erythema, Ascites, Caput Medusae, Splenomegaly (Suggests Portal Hypertension/Variceal bleed). <br><h3>PR Exam</h3>Mandatory. Confirm melaena vs fresh blood.`,
-                inv: `<h3>Laboratory</h3><strong>FBC:</strong> Low Hb (may be normal initially due to hemoconcentration - lag). Low Platelets (Liver disease/Hypersplenism). <strong>Urea:</strong> Elevated disproportionate to Creatinine (due to protein meal from blood digestion). <strong>Coagulation (INR):</strong> Deranged in liver disease/warfarin. <strong>GXM:</strong> Group and Crossmatch 4-6 units. <br><h3>Procedural</h3><strong>OGDS (Endoscopy):</strong> Diagnostic and Therapeutic. Ideally performed within 24h.`,
-                mgmt: `<h3>Resuscitation (ABCs)</h3><strong>Airway:</strong> Protect if low GCS. <strong>Circulation:</strong> 2 Large Bore Cannulas (Grey 16G/Orange 14G). Fluid Resuscitation (Crystalloids). Blood Transfusion (Target Hb 7-9 g/dL; Massive Transfusion Protocol if unstable). Correct coagulopathy (FFP/Vitamin K/Platelets). <br><h3>Medical</h3><strong>IV PPI:</strong> High dose (80mg bolus + 8mg/hr infusion) AFTER endoscopy. <strong>Variceal Suspected:</strong> Terlipressin/Octreotide (Splanchnic vasoconstrictors) + Prophylactic Antibiotics (Ceftriaxone) immediately. <br><h3>Endoscopic Therapy</h3><strong>Non-Variceal (Ulcer):</strong> Dual therapy (Adrenaline injection + Thermal coagulation or Hemoclips). <strong>Variceal:</strong> Band Ligation (EVL) is gold standard. Sclerotherapy. <br><h3>Refractory Bleeding</h3><strong>Interventional Radiology:</strong> Angiography + Embolization. <strong>Sengstaken-Blakemore Tube:</strong> Balloon tamponade (temporary bridge). <strong>Surgery:</strong> Under-running the vessel or TIPS (Transjugular Intrahepatic Portosystemic Shunt).`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Scores</div><strong>Glasgow-Blatchford Score:</strong> Uses Urea, Hb, BP, Pulse to risk stratify <em>before</em> endoscopy (Score 0 = Can discharge). <br><strong>Rockall Score:</strong> Calculates mortality risk <em>post-endoscopy</em>. <br><strong>Forrest Classification:</strong> Grades ulcer re-bleeding risk (Ia Spurting -> III Clean base).</div><div class="pearl-box"><div class="pearl-title">💎 Dieulafoy's Lesion</div>A rare cause of massive GI bleed. It is an abnormally large artery that penetrates the gut wall and erodes through the mucosa, even without an ulcer.</div>`
-            },
-            {
-                id: "pud", category: "Upper GI", name: "Peptic Ulcer Disease",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does eating food make the pain better (Duodenal) or worse (Gastric)?"</li><li>"Does the pain wake you up at night?" (Hunger pain)</li><li>"Do you take NSAIDs (Painkillers like Ibuprofen/Voltaren)?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Non-Ulcer Dyspepsia (Functional):</strong> Diagnosis of exclusion.</li><li><strong>Gastric Cancer:</strong> Weight loss, early satiety, anemia.</li><li><strong>Gallstones:</strong> Colicky pain, relation to fatty food.</li><li><strong>Pancreatitis:</strong> Back radiation.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3><strong>Pain:</strong> Epigastric burning pain (dyspepsia). <br><strong>Duodenal Ulcer (DU):</strong> Pain relieved by food (pylorus closes/buffer). "Hunger pain", wakes patient at night. Weight gain (eating to relieve pain). <br><strong>Gastric Ulcer (GU):</strong> Pain worsens with food (acid secretion). Patient avoids eating -> Weight loss, anorexia. <br><strong>Risk Factors:</strong> H. Pylori (90% DU, 70% GU), NSAIDs (Inhibit prostaglandins/mucosal protection), Smoking, Alcohol, Physiological Stress (Burns - Curling's / ICU - Cushing's).`,
-                exam: `<h3>Signs</h3>Often normal. <strong>Pointing Sign:</strong> Patient points to epigastrium with one finger. Epigastric tenderness. Check for signs of anemia (pallor) or complications (succussion splash in pyloric stenosis).`,
-                inv: `<h3>Diagnosis</h3><strong>OGDS (Endoscopy):</strong> Visualize ulcer. <strong>Biopsy:</strong> Mandatory for Gastric ulcers to rule out cancer (DU rarely malignant). <br><strong>H. pylori Testing:</strong> CLO test (Rapid urease test during scope), Urea Breath Test, or Stool Antigen. Serology is less useful (stays positive).`,
-                mgmt: `<h3>Medical</h3><strong>PPI (Omeprazole/Pantoprazole):</strong> Acid suppression. <br><strong>H. pylori Eradication (Triple Therapy):</strong> PPI + Clarithromycin + Amoxicillin (or Metronidazole) for 7-14 days. <br><strong>Lifestyle:</strong> Stop NSAIDs, Smoking cessation, Alcohol reduction. <br><h3>Surgical</h3>Rare nowadays due to PPIs. Indicated for complications (Perforation, Bleeding, Obstruction). <strong>Highly Selective Vagotomy</strong> or <strong>Partial Gastrectomy</strong> (Billroth I/II) for refractory cases.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Zollinger-Ellison Syndrome</div>Caused by a Gastrinoma (gastrin-secreting tumor, usually in pancreas/duodenum). Results in massive acid production and multiple, refractory peptic ulcers in unusual locations (e.g. jejunum).</div><div class="pearl-box"><div class="pearl-title">💎 H. Pylori Testing Rule</div>Patients must stop PPIs for 2 weeks before a Urea Breath Test or Stool Antigen test to avoid false negatives.</div>`
-            },
-            {
-                id: "perf_pud", category: "Upper GI", name: "Perforated PUD",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Did the pain start suddenly, like a clap of thunder?"</li><li>"Exactly what time did it start?" (Patient knows exact minute)</li><li>"History of ulcers or NSAID use?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Acute Pancreatitis:</strong> High Amylase, no pneumoperitoneum.</li><li><strong>Ruptured AAA:</strong> Pulsatile mass, shock, back pain.</li><li><strong>Myocardial Infarction:</strong> ECG changes.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3><strong>Pain:</strong> Sudden, abrupt onset of severe, generalized abdominal pain ("Thunderclap"). <br><strong>Progression:</strong> Initial chemical peritonitis (acid) -> Lucid interval (dilution) -> Bacterial peritonitis (sepsis). <br><strong>The Classic Triad:</strong> 1. Sudden onset abdominal pain. 2. Tachycardia. 3. Abdominal Rigidity. <br><strong>Risk Factors:</strong> Chronic dyspepsia, NSAID use, Steroids, Smoking, Previous Peptic Ulcer.`,
-                exam: `<h3>Inspection</h3>Patient lies perfectly still; breathing is shallow (diaphragmatic inhibition). Signs of shock (pallor, sweating). <br><h3>Palpation</h3><strong>"Board-like" Rigidity:</strong> Involuntary guarding of the entire abdomen. Tenderness is generalized, maximal in epigastrium initially. <strong>Rebound Tenderness:</strong> Positive (indicates Peritonitis). <br><h3>Percussion & Auscultation</h3><strong>Liver Dullness:</strong> Obliterated (replaced by resonance due to free gas under diaphragm). <strong>Bowel Sounds:</strong> Absent (silent abdomen).`,
-                inv: `<h3>Imaging</h3><strong>Erect Chest X-Ray (CXR):</strong> Shows free gas under the diaphragm (Pneumoperitoneum) - seen in 70% of cases. <strong>CT Abdomen:</strong> High sensitivity. Shows free air, fluid, and leak site. <br><h3>Labs</h3><strong>Amylase:</strong> May be mildly elevated (rule out Pancreatitis). <strong>Lactate:</strong> Elevated in sepsis/ischemia. FBC (Leukocytosis).`,
-                mgmt: `<h3>Resuscitation (Immediate)</h3><strong>ABCDE Approach:</strong> 2 large bore IV lines. <strong>Fluids:</strong> Crystalloids to restore BP. <strong>Nasogastric Tube:</strong> For decompression. <strong>Foley Catheter:</strong> Monitor urine output. <strong>Medications:</strong> IV Broad-spectrum Antibiotics, IV PPI (Pantoprazole), IV Analgesia. <br><h3>Surgical Repair</h3><strong>Laparotomy or Laparoscopy:</strong> Identification of perforation. <strong>Graham Patch Repair:</strong> Plugging the hole with a piece of omentum and suturing it. <strong>Peritoneal Toilet:</strong> Thorough washout of the abdominal cavity. <br><h3>Conservative (Taylor Approach)</h3>Rarely used. Only for stable patients with sealed perforation (confirmed on contrast study).`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Valentino's Syndrome</div>A perforated peptic ulcer where gastric contents track down the right paracolic gutter to the RLQ. This mimics <strong>acute appendicitis</strong>. Always think of perforation in "appendicitis" patients with sudden generalized onset.</div><div class="pearl-box"><div class="pearl-title">💎 Rigler's Sign</div>On abdominal X-ray, seeing both the inner and outer wall of the bowel (air on both sides). Indicates massive pneumoperitoneum.</div>`
-            },
-            {
-                id: "eso_gastric_ca", category: "Upper GI", name: "Esophageal & Gastric Ca",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Is food getting stuck? Solids first then liquids?" (Progressive mechanical obstruction)</li><li>"Have you lost a lot of weight recently?"</li><li>"Do you have a history of heartburn/reflux?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Achalasia:</strong> Dysphagia to liquids & solids same time.</li><li><strong>Peptic Stricture:</strong> Long hx of GERD.</li><li><strong>Pharyngeal Pouch:</strong> Halitosis, regurgitation.</li><li><strong>Stroke/Neurological:</strong> Choking, spluttering.</li></ul></div>`,
-                history: `<h3>Esophageal Ca Symptoms</h3><strong>Progressive Dysphagia:</strong> First to solids ("meat sticking"), then soft foods, then liquids. <strong>Weight Loss:</strong> Significant and rapid. <strong>Regurgitation/Vomiting.</strong> <strong>Odynophagia:</strong> Pain on swallowing. <strong>Hoarseness:</strong> Recurrent Laryngeal Nerve involvement. <br><h3>Gastric Ca Symptoms</h3><strong>Dyspepsia:</strong> Unresponsive to PPI. <strong>Early Satiety:</strong> Feeling full quickly. <strong>Epigastric Pain.</strong> <strong>Weight Loss/Anorexia.</strong> Vomiting (Pyloric obstruction). <br><strong>Risk Factors:</strong> <br>- <strong>Squamous Cell:</strong> Smoking, Alcohol, Nitrosamines. <br>- <strong>Adenocarcinoma:</strong> GERD, Barrett's Esophagus, Obesity. <br>- <strong>Gastric:</strong> H. Pylori, High salt diet, Smoking, Pernicious anemia, Blood group A.`,
-                exam: `<h3>Signs of Metastasis</h3><strong>Virchow's Node:</strong> Left supraclavicular node (Troisier's sign). <strong>Sister Mary Joseph Nodule:</strong> Umbilical nodule. <strong>Hepatomegaly:</strong> Liver mets. <strong>Epigastric Mass.</strong> Cachexia/Anemia.`,
-                inv: `<h3>Diagnosis</h3><strong>OGDS (Endoscopy) + Biopsy:</strong> Definitive. <br><h3>Staging</h3><strong>CT Thorax/Abdomen:</strong> Metastases (Liver/Lung). <strong>Endoscopic Ultrasound (EUS):</strong> T-staging (depth of invasion) and N-staging (nodes). <strong>PET Scan:</strong> Distant occult mets. <strong>Laparoscopy:</strong> To check for peritoneal seeding.`,
-                mgmt: `<h3>Esophageal Management</h3><strong>Surgery:</strong> Esophagectomy (Ivor-Lewis procedure - Two phase, abdominal and thoracic). <strong>Neoadjuvant:</strong> Chemo/Radiotherapy usually given first (CROSS trial data). <strong>Palliative:</strong> Esophageal Stent (for dysphagia). <br><h3>Gastric Management</h3><strong>Surgery:</strong> Total or Subtotal Gastrectomy with D2 Lymphadenectomy. <strong>Chemotherapy:</strong> Peri-operative (MAGIC protocol / FLOT regimen).`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Barrett's Esophagus</div>Metaplasia of the lower esophagus from Squamous to Columnar epithelium due to chronic acid reflux. It is a precursor to <strong>Adenocarcinoma</strong>. Requires surveillance endoscopy.</div><div class="pearl-box"><div class="pearl-title">💎 Krukenberg Tumor</div>A metastatic tumor to the ovary that originated from the stomach (histology shows signet ring cells).</div>`
-            },
-
-            // === LOWER GI (5 Conditions) ===
-            {
-                id: "appendicitis", category: "Lower GI", name: "Acute Appendicitis",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Can you point with one finger where the pain is most severe?" (McBurney's)</li><li>"Did the pain start here, or did it move from somewhere else?" (Migration)</li><li>"Does it hurt more when you move, cough, or go over speed bumps?" (Peritoneal irritation)</li><li>"Are you hungry? Could you eat your favorite meal right now?" (Hamburger sign - Anorexia)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Mesenteric Adenitis:</strong> Child, recent URI, shifting pain.</li><li><strong>Ectopic Pregnancy:</strong> Female, missed period - URGENT.</li><li><strong>Ureteric Colic:</strong> Loin to groin, no peritonism.</li><li><strong>Terminal Ileitis:</strong> Crohn's/Yersinia.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3><strong>Classic Sequence:</strong> Anorexia -> Periumbilical Pain (Visceral T10) -> Nausea/Vomiting -> Pain localization to RIF (Somatic) after 6-24h. <br><strong>Pain Nature:</strong> Constant, progressively worsening. <br><strong>Aggravating Factors:</strong> Pain worsens with movement, coughing, walking, deep breathing, <strong>squatting</strong>, or riding in a car (going over bumps - Dunphy's sign). <br><strong>Systemic:</strong> Low-grade fever (<38°C). High fever suggests perforation. <br><strong>Risk Factors:</strong> Peak incidence 10–30 years. Low fiber diet (increases transit time, risk of fecalith). Family History.`,
-                exam: `<h3>General Inspection</h3>Patient lies still, often with right hip flexed to relieve psoas tension. Flushed face, fetor oris. <br><h3>Abdominal Examination</h3><strong>McBurney's Point Tenderness:</strong> Junction of lateral 1/3 and medial 2/3 of spino-umbilical line. <strong>Guarding:</strong> Localized RIF. <strong>Rebound Tenderness:</strong> Blumberg's sign. <br><h3>Special Signs</h3><br>- <strong>Rovsing's Sign:</strong> Palpation of LLQ causes pain in RIF (gas displacement). <br>- <strong>Psoas Sign:</strong> Pain on passive extension of right thigh (Retrocecal appendix). <br>- <strong>Obturator Sign:</strong> Pain on internal rotation of flexed right hip (Pelvic appendix). <br><strong>Red Flags (Perforation):</strong> Generalized guarding, board-like rigidity, absent bowel sounds, high fever, tachycardia.`,
-                inv: `<h3>Laboratory</h3><strong>FBC:</strong> Leukocytosis (WBC >10) with left shift (neutrophilia). <strong>CRP:</strong> Elevated. <strong>Urinalysis:</strong> To rule out UTI (microscopic hematuria can occur if appendix irritates ureter). <strong>U-HCG:</strong> Mandatory in females of childbearing age to rule out Ectopic Pregnancy. <br><h3>Imaging</h3><strong>Ultrasound Abdomen:</strong> First line for children and pregnant women. Findings: Non-compressible tubular structure >6mm, target sign. <strong>CT Abdomen (Contrast):</strong> Gold standard for adults/elderly. Findings: Dilated appendix, wall thickening, fat stranding, appendicolith.`,
-                mgmt: `<h3>Pre-Operative</h3><strong>Resuscitation:</strong> NBM (Nil By Mouth), IV Fluids (Hartmann's/NS) to correct dehydration. <strong>Analgesia:</strong> IV Paracetamol/NSAIDs/Opioids (does not mask signs). <strong>Antibiotics:</strong> IV Broad-spectrum (e.g., Cefuroxime + Metronidazole) to cover Gram-negatives and Anaerobes. <br><h3>Surgical (Definitive)</h3><strong>Laparoscopic Appendectomy:</strong> Gold standard. Reduced pain, shorter stay, better cosmetic result, allows diagnostic view of other organs. <strong>Open Appendectomy:</strong> Gridiron or Lanz incision. Indicated if laparoscopy unavailable or dense adhesions. <br><h3>Complicated Cases</h3><strong>Appendiceal Mass/Abscess:</strong> If palpable mass present (Omentum walling off infection), manage conservatively initially (Antibiotics + Drainage if needed - Ochsner-Sherren regimen) followed by <strong>Interval Appendectomy</strong> (6-8 weeks later). <strong>Perforation:</strong> Requires urgent washout and antibiotics.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Alvarado Score (MANTRELS)</div>Migration, Anorexia, Nausea, Tenderness (2 points), Rebound, Elevated Temp, Leukocytosis (2 points), Shift to left. <br>Score <3: Unlikely. Score >7: High probability (Surgery).</div><div class="pearl-box"><div class="pearl-title">💎 Baldwin's Sign</div>Pain in the right flank when flexing the right hip. Suggests a <strong>retrocecal appendix</strong>.</div><div class="pearl-box"><div class="pearl-title">💎 Pregnant Patients</div>In pregnancy, the appendix is displaced upward and outward by the gravid uterus. Pain may present in the <strong>Right Upper Quadrant (RUQ)</strong>, mimicking cholecystitis.</div>`
-            },
-            {
-                id: "obstruction", category: "Lower GI", name: "Intestinal Obstruction",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Have you passed any gas (wind) or stool recently?" (Obstipation = Complete obstruction)</li><li>"Are you vomiting? Is it green (bile) or brown (feculent)?"</li><li>"Have you had previous abdominal surgeries?" (Adhesions)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Paralytic Ileus:</strong> Post-op, no pain, absent bowel sounds.</li><li><strong>Constipation:</strong> Rectum full of stool.</li><li><strong>Gastroenteritis:</strong> Diarrhea, no obstipation.</li></ul></div>`,
-                history: `<h3>Cardinal Symptoms (Tetrad)</h3>1. <strong>Pain:</strong> Colicky abdominal pain (comes and goes). Central (SBO) or lower (LBO). <br>2. <strong>Vomiting:</strong> Bilious (early/proximal obstruction) or Feculent (late/distal obstruction). <br>3. <strong>Distension:</strong> Progressive abdominal bloating. <br>4. <strong>Obstipation:</strong> Absolute constipation (failure to pass gas or stool). <br><strong>Risk Factors (Causes):</strong> <br>- <strong>Small Bowel (SBO):</strong> Adhesions (#1 cause), Hernias (#2), Intussusception, Crohn's. <br>- <strong>Large Bowel (LBO):</strong> Malignancy (#1 cause), Volvulus (Sigmoid/Cecal), Diverticular stricture.`,
-                exam: `<h3>Inspection</h3>Abdominal distension. Visible peristalsis. <strong>Surgical Scars:</strong> Suggests adhesions. <strong>Hernia Orifices:</strong> Check groins and umbilicus for incarcerated hernia (irreducible lump) - DO NOT MISS THIS. <br><h3>Auscultation</h3><strong>Early:</strong> Hyperactive, high-pitched "tinkling" bowel sounds. <strong>Late:</strong> Absent bowel sounds. <br><h3>PR Exam</h3>Empty rectum (ballooning) suggests obstruction. Impacted feces? Rectal mass? <br><strong>Red Flags (Ischemia/Strangulation):</strong> Constant pain (loss of colic), tenderness/guarding, fever, tachycardia, elevated Lactate. Needs URGENT surgery.`,
-                inv: `<h3>Imaging</h3><strong>Abdominal X-Ray (Supine & Erect):</strong> <br>- <strong>Small Bowel (SBO):</strong> Central loops, valvulae conniventes (lines cross full width), diameter >3cm. <br>- <strong>Large Bowel (LBO):</strong> Peripheral loops, haustra (lines do not cross), diameter >6cm (Cecum >9cm). <br>- <strong>Air-Fluid Levels:</strong> Visible on erect film. <br><strong>CT Abdomen (Contrast):</strong> Definitive. Identifies transition point (site of blockage) and cause (mass, adhesion, volvulus). Checks for ischemia (bowel wall enhancement). <br><h3>Labs</h3><strong>U&E:</strong> Hypokalemia, Dehydration (High Urea/Creatinine). <strong>VBG/Lactate:</strong> Metabolic Acidosis and High Lactate indicate Bowel Ischemia (Requires urgent surgery).`,
-                mgmt: `<h3>"Drip and Suck" (Conservative)</h3><strong>NBM:</strong> Bowel rest. <strong>Nasogastric Tube:</strong> Decompression of stomach (reduces vomiting/aspiration risk). <strong>IV Fluids:</strong> Aggressive rehydration with Potassium replacement. <strong>Catheter:</strong> Fluid balance. <br><strong>Indications:</strong> Adhesional SBO usually settles with this (24-48h). Gastrografin challenge may be used. <br><h3>Surgical Intervention</h3><strong>Indications:</strong> <br>- Strangulation/Ischemia (Peritonitis, fever, tachycardia, high lactate). <br>- Virgin abdomen (no prior surgery - likely tumor/congenital band). <br>- Irreducible Hernia. <br>- Failure of conservative management (>48h). <br><strong>Procedures:</strong> Adhesiolysis, Bowel Resection, Hernia Repair, Hartmnann's procedure.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Rule of 3, 6, 9 (Bowel Dilation)</div>Max normal diameter on AXR:<br><strong>3 cm:</strong> Small Bowel limit.<br><strong>6 cm:</strong> Large Bowel limit.<br><strong>9 cm:</strong> Cecum limit (Risk of perforation high!).</div><div class="pearl-box"><div class="pearl-title">💎 Ogilvie Syndrome</div>Acute colonic pseudo-obstruction. Massive dilation of the colon <em>without</em> mechanical blockage. Often seen in post-op, elderly, or critically ill patients. Treated with Neostigmine.</div>`
-            },
-            {
-                id: "colorectal", category: "Lower GI", name: "Colorectal Carcinoma",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Have you noticed a change in your bowel habits (looser/constipated)?"</li><li>"Is there blood mixed <em>in</em> the stool or on the surface?"</li><li>"Do you feel like you haven't completely emptied your bowel?" (Tenesmus - Rectal Ca)</li><li>"Have you lost weight unintentionally?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Diverticular Disease:</strong> History of flare-ups, pain.</li><li><strong>IBD:</strong> Younger, mucous/bloody diarrhea.</li><li><strong>Hemorrhoids:</strong> Fresh blood only, no weight loss.</li></ul></div>`,
-                history: `<h3>Red Flags</h3>Change in bowel habit (Constipation/Diarrhea). Unexplained weight loss & anorexia. Rectal bleeding/Mucus. Tenesmus (feeling of incomplete emptying - Rectal Ca). <br><h3>Site Specifics</h3><strong>Right Sided (Cecum/Ascending):</strong> Occult bleeding -> Iron Deficiency Anemia (Fatigue, SOB). Mass in RIF. Usually no obstruction (liquid stool). <br><strong>Left Sided (Sigmoid/Descending):</strong> Frank bleeding, Obstruction (colicky pain), "Pencil-thin" stools (stenosis). <br><strong>Risk Factors:</strong> Age >50, Diet (High red/processed meat, Low fiber), IBD (UC/Crohn's), Genetic (FAP, Lynch Syndrome), Smoking, Alcohol.`,
-                exam: `<h3>Findings</h3><strong>General:</strong> Pallor (Anemia), Cachexia, Virchow's Node (Left supraclavicular). <br><strong>Abdomen:</strong> Palpable mass (Right or Left iliac fossa). Hepatomegaly (Liver mets). Ascites. <br><strong>DRE:</strong> Palpable rectal mass, blood on glove. Check fixation/ulceration.`,
-                inv: `<h3>Diagnosis</h3><strong>Colonoscopy + Biopsy:</strong> Gold standard. <br><h3>Labs</h3><strong>CEA (Carcinoembryonic Antigen):</strong> Tumor marker (monitoring recurrence, not for screening). <strong>FBC:</strong> Microcytic hypochromic anemia. <br><h3>Staging</h3><strong>CT Thorax Abdomen Pelvis (TAP):</strong> Distant mets (Liver/Lung). <strong>MRI Pelvis:</strong> Mandatory for Rectal Ca (assess mesorectal fascia invasion and node status).`,
-                mgmt: `<h3>Surgical Resection (Curative)</h3><strong>Right Hemicolectomy:</strong> Cecal/Ascending tumors. <strong>Left Hemicolectomy:</strong> Descending colon. <strong>Sigmoid Colectomy:</strong> Sigmoid tumors. <strong>Anterior Resection (AR):</strong> High/Mid rectal tumors. <strong>Abdominoperineal Resection (APR):</strong> Low rectal tumors (<5cm from anal verge) - requires permanent end colostomy. <br><h3>Adjuvant Therapy</h3><strong>Chemotherapy:</strong> FOLFOX regimen (Node positive disease). <strong>Radiotherapy:</strong> Neo-adjuvant (Pre-op) for Rectal Cancer to shrink tumor and reduce local recurrence.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Lynch Syndrome (HNPCC)</div>Most common hereditary cause. Associated with Colorectal, Endometrial, and Ovarian cancers. Remember the <strong>3-2-1 Rule</strong> (Amsterdam Criteria): 3 relatives, 2 generations, 1 diagnosed <50y.</div><div class="pearl-box"><div class="pearl-title">💎 Apple Core Sign</div>Classic appearance of a constricting annular carcinoma of the colon on a Barium Enema or CT scan.</div>`
-            },
-            {
-                id: "diverticular", category: "Lower GI", name: "Diverticular Disease",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Is the pain in your lower left side?"</li><li>"Do you have a history of diverticulosis?"</li><li>"Do you have fever or constipation?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Colorectal Cancer:</strong> Bleeding, weight loss.</li><li><strong>IBD:</strong> Younger, diarrhea.</li><li><strong>Gastroenteritis:</strong> Vomiting, contacts.</li><li><strong>Ureteric Colic:</strong> Loin to groin.</li></ul></div>`,
-                history: `<h3>Definitions</h3><strong>Diverticulosis:</strong> Presence of diverticula (outpouchings of mucosa through muscularis layer). Common, asymptomatic. <br><strong>Diverticulitis:</strong> Infection/inflammation of diverticula. <br><h3>Symptoms (Diverticulitis)</h3><strong>Pain:</strong> Left Iliac Fossa (LIF) pain ("Left sided appendicitis"). Fever, change in bowel habit (constipation/diarrhea). Nausea/Vomiting. <br><strong>Risk Factors:</strong> Low fiber intake (increases intraluminal pressure), Age, Obesity, NSAIDs/Steroids (Increase risk of bleeding/perforation).`,
-                exam: `<h3>Findings</h3>LIF tenderness and guarding. Palpable mass (phlegmon/abscess). PR exam tenderness.`,
-                inv: `<h3>Diagnosis</h3><strong>CT Abdomen (Contrast):</strong> Diagnostic test of choice. Shows wall thickening, fat stranding, abscess, free air. <br><strong>Note:</strong> Colonoscopy is CONTRAINDICATED in acute phase (risk of perforation). Done 6 weeks later to rule out cancer.`,
-                mgmt: `<h3>Uncomplicated</h3>Oral antibiotics, fluids, analgesia. Outpatient if mild. <br><h3>Complicated (Abscess/Perf)</h3><strong>Abscess (>4cm):</strong> Percutaneous drainage. <strong>Perforation (Purulent/Fecal):</strong> Hartmann's Procedure (Sigmoidectomy with End Colostomy). Stoma reversal later. <br><strong>Classification:</strong> Hinchey Classification.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Hinchey Classification (Details)</div><ul><li><strong>I:</strong> Pericolic abscess (localized).</li><li><strong>II:</strong> Pelvic/Distant abscess.</li><li><strong>III:</strong> Purulent peritonitis (Ruptured).</li><li><strong>IV:</strong> Fecal peritonitis.</li></ul></div><div class="pearl-box"><div class="pearl-title">💎 Asian Population Difference</div>In Asians, diverticula are predominantly right-sided (cecum/ascending colon). In Western populations, they are left-sided (sigmoid).</div>`
-            },
-            {
-                id: "lgib", category: "Lower GI", name: "Lower GI Bleeding",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Is the blood bright red or mixed with stool?"</li><li>"Does it hurt when you open your bowels?"</li><li>"Do you have a history of constipation or diverticulosis?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Diverticulosis:</strong> Painless, massive bleed.</li><li><strong>Hemorrhoids:</strong> Bright red on paper, painless/painful.</li><li><strong>Cancer:</strong> Altered bowel habit, mixed blood.</li><li><strong>Angiodysplasia:</strong> Elderly, renal failure.</li></ul></div>`,
-                history: `<h3>Presentation</h3><strong>Hematochezia:</strong> Passage of fresh red blood per rectum. <strong>Clots:</strong> Suggests profuse bleeding. <strong>Pain:</strong> Painful (Fissure, Ischemia, IBD) vs Painless (Diverticula, Angiodysplasia, Hemorrhoids). <br><h3>Risk Factors & Causes</h3><strong>Diverticulosis (Commonest):</strong> Low fiber diet, Elderly. <strong>Hemorrhoids:</strong> Constipation, Straining. <strong>Angiodysplasia:</strong> Elderly, Renal failure (AV malformations). <strong>Malignancy:</strong> History of polyps, Family history. <strong>IBD:</strong> Ulcerative Colitis history.`,
-                exam: `<h3>Digital Rectal Exam (DRE)</h3>Look for anal fissures, hemorrhoids, rectal masses, blood on glove. <br><h3>Abdomen</h3>Tenderness (Colitis/Ischemia). Masses.`,
-                inv: `<h3>Initial</h3><strong>FBC, Coagulation, GXM.</strong> <strong>Proctoscopy:</strong> Bedside view of anal canal (hemorrhoids). <br><h3>Imaging/Scopes</h3><strong>CT Angiogram:</strong> First line for unstable massive bleed (>0.5ml/min). Localizes site. <strong>Colonoscopy:</strong> Diagnostic choice if stable. <strong>Red Cell Scan:</strong> For slow intermittent bleeds.`,
-                mgmt: `<h3>Conservative</h3>Resuscitation (IV Fluids/Blood). Stop anticoagulants. Most diverticular bleeds stop spontaneously (80%). <br><h3>Interventional</h3><strong>Colonoscopy:</strong> Clipping, Epinephrine injection, Thermal probe. <strong>Angiography:</strong> Selective Embolization (coiling). <br><h3>Surgical</h3>Subtotal Colectomy (last resort) if bleeding source not found and patient unstable.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Heyde's Syndrome</div>The association between <strong>Aortic Stenosis</strong> and <strong>Angiodysplasia</strong> bleeding. Von Willebrand factor is destroyed as it passes through the stenotic valve, leading to bleeding from fragile vessels.</div>`
-            },
-
-            // === UROLOGY (4 Conditions) ===
-            {
-                id: "stones", category: "Urology", name: "Renal Stones (Urolithiasis)",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Is the pain moving from your loin (back) to your groin?"</li><li>"Can you find a comfortable position?" (No = Colic)</li><li>"Any blood in urine or burning sensation?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Appendicitis:</strong> Right sided, patient lies still.</li><li><strong>Ruptured AAA:</strong> Elderly, shock, pulsatile mass.</li><li><strong>Pyelonephritis:</strong> Fever, rigors, sepsis.</li><li><strong>Musculoskeletal Back Pain:</strong> Worse with movement.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3><strong>Renal Colic:</strong> Sudden, severe, fluctuating pain ("Loin to Groin"). Patient is restless, rolling around in bed (cannot get comfortable). Associated with Nausea, vomiting, hematuria, dysuria. <br><strong>Risk Factors:</strong> Dehydration, High salt/animal protein diet, Gout, Hyperparathyroidism, Family history. <br><strong>Stone Types:</strong> Calcium Oxalate (80%), Uric Acid (Radiolucent), Struvite (Infection), Cystine.`,
-                exam: `<h3>Findings</h3><strong>Abdomen:</strong> Soft, non-tender anteriorly (retroperitoneal pathology). Tenderness in renal angle (CVA). <strong>Systemic:</strong> Fever indicates infected obstructed kidney (Urological Emergency!).`,
-                inv: `<h3>Bedside</h3><strong>Urine Dipstick:</strong> +++ Blood. pH (Uric acid stones acidic). Nitrites (Infection). <br><h3>Labs</h3>Renal profile (Creatinine), Calcium, Uric Acid, CRP/WBC (Infection). <br><h3>Imaging</h3><strong>CT KUB (Non-contrast):</strong> Gold standard (Sensitivity 99%). Detects almost all stones (radiopaque & radiolucent) and hydronephrosis. <strong>X-Ray KUB:</strong> Only sees radiopaque stones (Calcium). Misses Uric acid stones.`,
-                mgmt: `<h3>Acute Management</h3><strong>Analgesia:</strong> NSAIDs (Diclofenac IM/PR) are superior to opioids for colic (reduce glomerular pressure). Hydration. <strong>Medical Expulsive Therapy (MET):</strong> Tamsulosin (Alpha-blocker) for distal ureteric stones <10mm. <br><h3>Intervention Indications</h3>Stone >10mm, Failure of MET, Intractable pain, Single kidney, Infection. <br><h3>Procedures</h3><strong>ESWL (Shockwave Lithotripsy):</strong> Non-invasive. For renal stones <2cm. <strong>URS (Ureteroscopy):</strong> Laser fragmentation. For ureteric stones. <strong>PCNL (Percutaneous Nephrolithotomy):</strong> Keyhole surgery. For large renal stones (>2cm) or Staghorn calculi. <br><h3>Emergency Drainage</h3>If Infected + Obstructed Kidney -> Nephrostomy or DJ Stent insertion immediately.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Hounsfield Units (HU)</div>Used on CT to determine stone hardness. Uric acid stones are softer (~500 HU) and can sometimes be dissolved chemically. Calcium stones are harder (>1000 HU) and require lithotripsy/laser.</div><div class="pearl-box"><div class="pearl-title">💎 Struvite Stones</div>Infection stones caused by urea-splitting bacteria (e.g., <em>Proteus</em>). Forms "Staghorn Calculi" that fill the renal pelvis.</div>`
-            },
-            {
-                id: "bph", category: "Urology", name: "Benign Prostatic Hyperplasia",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Do you have to wait for the stream to start?" (Hesitancy)</li><li>"Do you wake up multiple times at night to pee?" (Nocturia)</li><li>"Is the stream weak or intermittent?"</li><li>"Do you feel you haven't emptied completely?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Prostate Cancer:</strong> Hard/craggy DRE.</li><li><strong>Urethral Stricture:</strong> History of trauma/STI.</li><li><strong>UTI:</strong> Dysuria, cloudy urine.</li><li><strong>Neurogenic Bladder:</strong> Diabetes, spinal cord injury.</li></ul></div>`,
-                history: `<h3>LUTS (Lower Urinary Tract Symptoms)</h3><strong>Obstructive (Voiding):</strong> Hesitancy, poor stream, terminal dribbling, incomplete emptying. <br><strong>Irritative (Storage):</strong> Frequency, Urgency, Nocturia (>2 times/night). <br><strong>Complications:</strong> Acute Urinary Retention (AUR) - Painful inability to void. Recurrent UTIs. Bladder Stones. Overflow Incontinence. <br><strong>Risk Factors:</strong> Age (Main factor), Family History, Metabolic Syndrome.`,
-                exam: `<h3>DRE (Digital Rectal Exam)</h3>Prostate is Enlarged, Smooth, Firm, Symmetrical. Median Sulcus is preserved. Consistency like "thenar eminence". <br><h3>Abdomen</h3>Palpable bladder (chronic retention) - dull on percussion.`,
-                inv: `<h3>Basic</h3><strong>Urinalysis:</strong> Rule out UTI/Hematuria. <strong>PSA (Prostate Specific Antigen):</strong> Rule out cancer (Counsel patient first). <strong>IPSS Score:</strong> Symptom severity grading. <br><h3>Advanced</h3><strong>Uroflowmetry:</strong> Objective measure. Qmax <10ml/s = Obstruction. <strong>Ultrasound KUB:</strong> Assess prostate volume and post-void residual urine.`,
-                mgmt: `<h3>Lifestyle</h3>Fluid restriction before bed, reduce caffeine/alcohol, bladder training. <br><h3>Medical</h3><strong>Alpha-blockers (Tamsulosin):</strong> Relax smooth muscle of bladder neck. Rapid onset (days). Side effect: Retrograde ejaculation/Hypotension. <strong>5-Alpha Reductase Inhibitors (Finasteride):</strong> Shrink prostate size by blocking Testosterone->DHT. Takes 6 months. Side effect: Erectile dysfunction. <br><h3>Surgical</h3><strong>Indications:</strong> Refractory retention, Renal failure, Stones, Failed medical tx. <strong>TURP (Transurethral Resection of Prostate):</strong> Gold standard. "Reaming out" the core. <strong>Laser Enucleation (HoLEP):</strong> For large glands.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 PSA Density</div>PSA level divided by Prostate Volume. High density (>0.15) suggests Cancer, while low density suggests BPH (big prostate producing more PSA).</div><div class="pearl-box"><div class="pearl-title">💎 TURP Syndrome</div>Dilutional hyponatremia caused by absorption of irrigation fluid (Glycine) during surgery. Signs: Confusion, nausea, hypertension, bradycardia.</div>`
-            },
-            {
-                id: "prostate_ca", category: "Urology", name: "Prostate Cancer",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Do you have family history of prostate cancer?"</li><li>"Do you have any new back pain?" (Bone mets)</li><li>"Any blood in your semen?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>BPH:</strong> Smooth DRE.</li><li><strong>Prostatitis:</strong> Tender, boggy DRE.</li></ul></div>`,
-                history: `<h3>Presentation</h3><strong>Early:</strong> Often asymptomatic (raised PSA screening). <strong>Local:</strong> LUTS (similar to BPH), Hematospermia, Hematuria. <strong>Metastatic:</strong> Bone pain (Back pain), Pathological fractures, Weight loss, Spinal cord compression. <br><strong>Risk Factors:</strong> Age (rare <50), African ethnicity, Family History (BRCA2).`,
-                exam: `<h3>DRE</h3>Hard, Craggy, Irregular nodule/mass. Asymmetry. Loss of median sulcus. Consistency like "knuckle". <br><strong>Red Flag:</strong> Cauda Equina Signs (Saddle anesthesia, incontinence) from spinal metastasis.`,
-                inv: `<h3>Diagnosis</h3><strong>PSA:</strong> Elevated (>4ng/ml). Also raised in BPH, UTI, Prostatitis. <strong>Multiparametric MRI Prostate:</strong> First line. PI-RADS scoring (1-5) to guide biopsy. <strong>Biopsy:</strong> Transrectal (TRUS) or Transperineal. Gleason Score (Histology grading). <br><h3>Staging</h3><strong>Bone Scan:</strong> Osteosclerotic (blastic) lesions. <strong>CT/PSMA PET:</strong> For mets.`,
-                mgmt: `<h3>Localised Disease</h3><strong>Active Surveillance:</strong> Regular PSA/MRI for low risk (Gleason 6). <strong>Radical Prostatectomy:</strong> Robotic assisted (RALP). Risk of incontinence/ED. <strong>Radical Radiotherapy:</strong> External beam or Brachytherapy. <br><h3>Advanced/Metastatic</h3><strong>Androgen Deprivation Therapy (ADT):</strong> Medical castration (LHRH agonists - Goserelin/Leuprolide). <strong>Chemotherapy:</strong> Docetaxel. <strong>Novel Anti-androgens:</strong> Enzalutamide/Abiraterone.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Gleason Grading Groups</div>Modern system replaces just the score:<br><strong>Group 1:</strong> Gleason 6 (3+3) - Low risk.<br><strong>Group 2:</strong> Gleason 7 (3+4) - Favorable intermediate.<br><strong>Group 3:</strong> Gleason 7 (4+3) - Unfavorable.<br><strong>Group 5:</strong> Gleason 9-10 - High risk.</div><div class="pearl-box"><div class="pearl-title">💎 Osteoblastic Metastasis</div>Unlike most cancers (breast/lung) which cause lytic (hole-punch) bone lesions, Prostate cancer causes <strong>sclerotic (dense white)</strong> lesions on X-ray.</div>`
-            },
-            {
-                id: "bladder_ca", category: "Urology", name: "Urinary Bladder Cancer",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Is there blood in your urine? Is it painful?" (Painless = Cancer until proven otherwise)</li><li>"Do you smoke? How many pack years?"</li><li>"Do you work with chemicals, dyes, or rubber?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>UTI:</strong> Painful, frequency, cloudy.</li><li><strong>Renal Stones:</strong> Colicky pain.</li><li><strong>BPH:</strong> Enlarged prostate on DRE.</li></ul></div>`,
-                history: `<h3>Chief Complaint</h3><strong>Painless Gross Hematuria:</strong> The hallmark sign. Visible blood in urine without pain. (Assume cancer until proven otherwise). <strong>Irritative Symptoms:</strong> Frequency, urgency, dysuria (mimics UTI, but culture negative). <br><strong>Risk Factors:</strong> <strong>Smoking:</strong> Single biggest risk factor (4x risk). Carcinogens excreted in urine. <strong>Occupational Exposure:</strong> Rubber, dye, textile industries (Aromatic amines, Aniline dyes). <strong>Schistosomiasis:</strong> Chronic infection (Squamous cell carcinoma risk). Drugs (Cyclophosphamide). Pelvic Radiation.`,
-                exam: `<h3>Findings</h3>Often unremarkable. <strong>Abdominal:</strong> Suprapubic mass (large tumor/retention). <strong>DRE/Bimanual Exam:</strong> To assess for pelvic mass or fixation (advanced disease). Signs of anemia (pallor).`,
-                inv: `<h3>Diagnostic</h3><strong>Urinalysis:</strong> Microscopic hematuria. Cytology (malignant cells). <strong>Cystoscopy + Biopsy:</strong> Gold standard diagnosis. Visualizes tumor (papillary vs sessile). <br><h3>Staging</h3><strong>CT Urogram (CT KUB + Contrast):</strong> Assesses upper tracts (kidneys/ureters) and local extension. <strong>MRI Pelvis:</strong> For local staging of muscle invasion. <strong>TURBT (Transurethral Resection of Bladder Tumor):</strong> Diagnostic and staging procedure (determines muscle invasion).`,
-                mgmt: `<h3>Non-Muscle Invasive (Superficial)</h3><strong>TURBT:</strong> Complete resection of the tumor. <strong>Intravesical Therapy:</strong> Chemotherapy (Mitomycin C post-op) or Immunotherapy (BCG for high-grade/CIS). <br><h3>Muscle Invasive</h3><strong>Radical Cystectomy:</strong> Removal of bladder + prostate/uterus + pelvic nodes. Requires urinary diversion (Ileal conduit or Neobladder). <strong>Chemotherapy:</strong> Neoadjuvant (before surgery) improves survival. <br><h3>Bladder Preservation</h3>Maximal TURBT + Chemotherapy + Radiation Therapy (Trimodality).`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Squamous Cell Carcinoma</div>While Transitional Cell Carcinoma (TCC) is the most common type, Squamous Cell is classically associated with <strong>Schistosomiasis</strong> infection (common in Egypt/Middle East).</div><div class="pearl-box"><div class="pearl-title">💎 Field Change Effect</div>The entire urothelium (from renal pelvis to urethra) is exposed to the same carcinogens in urine. Hence, bladder cancer patients are at risk for cancers in the ureter and renal pelvis too.</div>`
-            },
-
-            // === GENERAL / ENDOCRINE (3 Conditions) ===
-            {
-                id: "hernia", category: "General/Endocrine", name: "Groin Hernias",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the lump disappear when you lie down?"</li><li>"Is it painful? Can you push it back in?" (Irreducible = Incarcerated)</li><li>"Do you do heavy lifting or have a chronic cough?"</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Hydrocele:</strong> Transilluminates, possible to get above it.</li><li><strong>Lymph Node:</strong> Firm, multiple, infection elsewhere.</li><li><strong>Femoral Artery Aneurysm:</strong> Pulsatile.</li><li><strong>Saphena Varix:</strong> Soft, compressible, thrill on cough.</li></ul></div>`,
-                history: `<h3>Clinical Presentation</h3><strong>Lump:</strong> Swelling in the groin. <strong>Reducibility:</strong> Lump appears when standing, coughing, or straining. Disappears when lying down or can be pushed back. <strong>Symptoms:</strong> Dragging sensation, aching pain, or asymptomatic. <br><strong>Complications (Red Flags):</strong> Incarceration (Painful, irreducible lump). Strangulation (Sudden severe pain, nausea, vomiting, red/tender lump - Ischemic bowel - Emergency!). Obstruction. <br><strong>Types:</strong> <strong>Inguinal:</strong> Above and medial to pubic tubercle. <strong>Femoral:</strong> Below and lateral to pubic tubercle (High strangulation risk). <br><strong>Risk Factors:</strong> Raised Intra-abdominal Pressure (Chronic cough, Constipation, Heavy lifting, BPH). Obesity. Smoking. Age.`,
-                exam: `<h3>Examination Steps</h3><strong>Inspection:</strong> Site, size, skin changes. Visible cough impulse. <strong>Palpation:</strong> Get above the swelling? (Yes = Scrotal; No = Hernia). Cough Impulse. Reducibility. <br><strong>Deep Ring Occlusion Test:</strong> Reduce hernia, occlude deep ring (midpoint of inguinal ligament), ask patient to cough. <br>- If restrained = Indirect (goes through deep ring). <br>- If appears medial to finger = Direct (goes through posterior wall).`,
-                inv: `<h3>Diagnostic</h3><strong>Clinical Diagnosis:</strong> Usually sufficient. <strong>Ultrasound Groin:</strong> If diagnostic uncertainty (e.g., small hernia vs lymph node vs lipoma). <strong>CT Abdomen:</strong> If strangulation/obstruction suspected.`,
-                mgmt: `<h3>Conservative</h3><strong>Watchful Waiting:</strong> Recommended for small, asymptomatic (or minimally symptomatic) inguinal hernias in men. <strong>Supportive Truss:</strong> Can provide symptomatic relief if unfit for surgery. <br><h3>Surgical (Hernia Repair)</h3><strong>Indications:</strong> Symptomatic, getting bigger, femoral hernia (always fix), or complications. <strong>Open Repair (Lichtenstein):</strong> Anterior approach. Mesh reinforcement (Hernioplasty) reduces recurrence. <strong>Minimally Invasive (Laparoscopic/Robotic):</strong> TEP or TAPP. Preferred for bilateral hernias, recurrent hernias, and quicker recovery. <strong>Emergency Surgery:</strong> Required for Strangulation. Resection of non-viable bowel + repair (often without mesh in infected field).`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Richter's Hernia</div>Only one wall of the bowel (antimesenteric) herniates. It can strangulate and perforate without causing total obstruction signs.</div><div class="pearl-box"><div class="pearl-title">💎 Pantaloon Hernia</div>A combined direct and indirect inguinal hernia on the same side (straddling the inferior epigastric vessels).</div>`
-            },
-            {
-                id: "breast", category: "General/Endocrine", name: "Breast Cancer",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"When did you first notice the lump? Is it growing?"</li><li>"Any nipple discharge (bloody) or inversion?"</li><li>"Family history of breast or ovarian cancer?"</li><li>"Age of menarche/menopause/first child?" (Estrogen window)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Fibroadenoma:</strong> Young, mobile, firm, "breast mouse".</li><li><strong>Cyst:</strong> Smooth, fluid-filled, halo on mammogram.</li><li><strong>Breast Abscess:</strong> Painful, hot, fever, lactating.</li><li><strong>Fat Necrosis:</strong> History of trauma, mimics cancer.</li></ul></div>`,
-                history: `<h3>History of Presenting Illness</h3>Painless hard lump. Skin dimpling/tethering. Nipple inversion. Bloody discharge. Axillary lump. <br><strong>Risk Factors:</strong> Genetic (BRCA1/BRCA2), Family History (First degree), Hormonal (Early menarche <12, Late menopause >55, Nulliparity, First child >30, HRT use), Age, Obesity (post-menopausal), Alcohol.`,
-                exam: `<h3>Inspection</h3>(Arms by side -> Raised -> Hands on hips). Asymmetry, Skin tethering, Peau d'orange (edema from blocked lymphatics), Nipple changes. <br><h3>Palpation</h3>Hard, gritty, irregular margins, tethered to skin or pectoralis muscle. Palpable axillary/supraclavicular nodes.`,
-                inv: `<h3>Triple Assessment (Gold Standard)</h3>1. <strong>Clinical Examination.</strong> <br>2. <strong>Imaging:</strong> Mammogram (>35 years old - Calcifications, Spiculated mass). Ultrasound (<35 years old - Solid vs Cystic). <br>3. <strong>Pathology:</strong> Core Needle Biopsy (Preferred - shows architecture/invasion). FNAC (Cytology only). <br><h3>Staging</h3>CT TAP and Bone Scan (if symptomatic or advanced). Receptor Status: ER (Estrogen), PR (Progesterone), HER2.`,
-                mgmt: `<h3>Surgical</h3><strong>WLE (Wide Local Excision):</strong> Breast Conserving Surgery. Must be followed by Radiotherapy. <strong>Mastectomy:</strong> For large/multifocal tumors. +/- Reconstruction. <br><h3>Axillary Management</h3><strong>Sentinel Lymph Node Biopsy (SLNB):</strong> For clinically node-negative. <strong>Axillary Clearance:</strong> For node-positive. <br><h3>Adjuvant Therapy</h3><strong>Chemotherapy:</strong> For high grade, node positive, or triple negative. <strong>Endocrine:</strong> Tamoxifen (Pre-menopausal), Aromatase Inhibitors (Letrozole - Post-menopausal) for ER+ tumors. <strong>Targeted:</strong> Trastuzumab (Herceptin) for HER2+ tumors.`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Inflammatory Breast Cancer</div>Aggressive cancer presenting with a red, swollen, warm breast (mimics mastitis) and Peau d'orange. Caused by tumor emboli blocking dermal lymphatics. Poor prognosis.</div><div class="pearl-box"><div class="pearl-title">💎 Paget's Disease</div>Eczema-like rash on nipple/areola. It is an intra-epithelial adenocarcinoma. Almost always associated with underlying DCIS or invasive cancer.</div>`
-            },
-            {
-                id: "thyroid", category: "General/Endocrine", name: "Thyroid Disease",
-                clerking: `<div class="box box-green"><span class="box-title">Golden Questions</span><ul><li>"Does the lump move when you swallow?"</li><li>"Do you prefer hot or cold weather?" (Hyper/Hypo)</li><li>"Has your voice changed?" (Nerve invasion)</li><li>"Any difficulty breathing or swallowing?" (Compression)</li></ul></div><div class="box box-blue"><span class="box-title">Differential Diagnosis</span><ul><li><strong>Multinodular Goiter:</strong> Multiple lumps, euthyroid usually.</li><li><strong>Graves' Disease:</strong> Diffuse goiter, eye signs, bruit.</li><li><strong>Thyroglossal Cyst:</strong> Midline, moves with tongue protrusion.</li><li><strong>Thyroiditis:</strong> Painful/tender thyroid.</li></ul></div>`,
-                history: `<h3>Presentation</h3><strong>Lump:</strong> Anterior neck swelling moving with deglutition. <strong>Compressive:</strong> Dysphagia (esophagus), Dyspnea/Stridor (trachea), Hoarseness (Recurrent Laryngeal Nerve). <br><h3>Functional Status</h3><strong>Hyperthyroid (Thyrotoxicosis):</strong> Weight loss, increased appetite, heat intolerance, sweating, palpitations, tremors, anxiety, diarrhea, oligomenorrhea. <br><strong>Hypothyroid:</strong> Weight gain, cold intolerance, lethargy, constipation, dry skin, depression. <br><strong>Risk Factors:</strong> Radiation (Papillary Ca), Iodine Deficiency (Goiter/Follicular), Family History (MEN 2), Autoimmune.`,
-                exam: `<h3>Thyroid Exam</h3><strong>Inspection:</strong> Moves with swallowing. Tongue protrusion (Thyroglossal cyst moves up). <strong>Palpation:</strong> From behind. Define size, consistency (diffuse/nodular), tenderness. <strong>Pemberton's Sign:</strong> Raising arms causes facial congestion (Retrosternal goiter obstructing thoracic inlet). <br><h3>Associated Signs</h3><strong>Eye Signs (Graves):</strong> Exophthalmos, Lid retraction, Lid lag, Chemosis. <strong>Peripheral:</strong> Fine tremor, Pulse (AF/Tachy), Warm sweaty palms vs Dry skin.`,
-                inv: `<h3>Labs</h3><strong>TFTs:</strong> TSH, Free T3, Free T4. <strong>Antibodies:</strong> Anti-TSH receptor (Graves), Anti-TPO (Hashimoto's). <strong>Calcitonin:</strong> Medullary Thyroid Ca. <br><h3>Imaging/Pathology</h3><strong>Ultrasound Neck:</strong> Solid vs Cystic. TI-RADS grading. <strong>FNAC (Fine Needle Aspiration):</strong> For nodules >1cm or suspicious features. Bethesda scoring. <strong>Radioisotope Scan:</strong> Hot nodule (toxic adenoma) vs Cold nodule (cancer risk).`,
-                mgmt: `<h3>Medical</h3><strong>Hyperthyroid:</strong> Carbimazole or Propylthiouracil (PTU). Beta-blockers (Propranolol) for symptoms. <strong>Hypothyroid:</strong> Levothyroxine replacement. <br><h3>Radioactive Iodine (RAI)</h3>For Graves' disease, Toxic Adenoma, or Thyroid Cancer remnant ablation. Contraindicated in pregnancy/active eye disease. <br><h3>Surgical (Thyroidectomy)</h3><strong>Indications:</strong> Malignancy, Compression symptoms, Cosmetic, Failed medical tx. <strong>Types:</strong> Hemithyroidectomy or Total Thyroidectomy. <strong>Complications:</strong> Hypocalcemia (Parathyroid damage), Hoarseness (RLN palsy), Hematoma (Airway compromise).`,
-                pearls: `<div class="pearl-box"><div class="pearl-title">💎 Papillary Carcinoma</div>Most common thyroid cancer (80%). Spread via Lymphatics. Excellent prognosis. Histology shows "Orphan Annie" nuclei and Psammoma bodies.</div><div class="pearl-box"><div class="pearl-title">💎 Hypocalcemia Signs (Post-Op)</div><strong>Chvostek's Sign:</strong> Tapping facial nerve causes twitching. <strong>Trousseau's Sign:</strong> Carpopedal spasm after inflating BP cuff > systolic pressure.</div>`
-            }
-        ];
-
         // --- APP LOGIC ---
-
         const caseListEl = document.getElementById('caseList');
         const searchInput = document.getElementById('searchInput');
         const welcomeState = document.getElementById('welcomeState');
         const caseDetails = document.getElementById('caseDetails');
         const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
 
         function renderList(filter = '') {
             caseListEl.innerHTML = '';
             
-            // Get unique categories
             const categories = [...new Set(medicalData.map(item => item.category))];
-            
             let foundAny = false;
 
             categories.forEach(cat => {
@@ -587,13 +418,11 @@
 
                 if (itemsInCat.length > 0) {
                     foundAny = true;
-                    // Add Category Header
                     const header = document.createElement('div');
                     header.className = 'category-header';
                     header.innerText = cat;
                     caseListEl.appendChild(header);
 
-                    // Add Items
                     itemsInCat.forEach(item => {
                         const btn = document.createElement('button');
                         btn.className = 'case-btn';
@@ -604,9 +433,7 @@
                 }
             });
 
-            if (!foundAny) {
-                caseListEl.innerHTML = '<div style="padding:1rem; text-align:center; color:#94a3b8; font-size:0.9rem;">No matches found</div>';
-            }
+            if (!foundAny) caseListEl.innerHTML = '<div style="padding:2rem; text-align:center; color:var(--text-muted); font-size:0.9rem;">No matches found</div>';
         }
 
         function selectCase(id, btnElement) {
@@ -618,7 +445,7 @@
             document.getElementById('categoryTag').innerText = data.category;
             document.getElementById('caseTitle').innerText = data.name;
             
-            const sections = ['clerking', 'history', 'exam', 'inv', 'mgmt', 'pearls'];
+            const sections = ['clerking', 'history', 'physiology', 'exam', 'inv', 'mgmt', 'complications', 'pearls'];
             sections.forEach(sec => {
                 document.getElementById(`tab-${sec}`).innerHTML = data[sec] || '<div class="box box-blue">Data coming soon...</div>';
             });
@@ -630,7 +457,9 @@
             const clerkTabBtn = document.querySelector('.tab-btn.clerking');
             if(clerkTabBtn) switchTab('clerking', clerkTabBtn);
 
-            if(window.innerWidth <= 768) toggleSidebar();
+            if(window.innerWidth <= 768) toggleSidebar(false);
+            
+            document.querySelector('main').scrollTop = 0;
         }
 
         function switchTab(tabId, btn) {
@@ -640,35 +469,23 @@
             document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        function toggleSidebar() { sidebar.classList.toggle('open'); }
-
-        function copyContent() {
-            const title = document.getElementById('caseTitle').innerText;
-            const strip = (html) => {
-                let tmp = document.createElement("DIV");
-                tmp.innerHTML = html;
-                return tmp.innerText;
-            };
-
-            const sections = ['clerking', 'history', 'exam', 'inv', 'mgmt', 'pearls'];
-            let text = `CONDITION: ${title}\n\n`;
+        function toggleSidebar(forceState) {
+            const isOpen = sidebar.classList.contains('open');
+            const shouldOpen = forceState !== undefined ? forceState : !isOpen;
             
-            sections.forEach(sec => {
-                const content = document.getElementById(`tab-${sec}`).innerHTML;
-                if(content) text += `[${sec.toUpperCase()}]\n${strip(content)}\n\n`;
-            });
-            
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                const orig = btn.innerText;
-                btn.innerText = "Copied!";
-                setTimeout(() => btn.innerText = "Copy Data", 2000);
-            });
+            if (shouldOpen) {
+                sidebar.classList.add('open');
+                backdrop.classList.add('open');
+            } else {
+                sidebar.classList.remove('open');
+                backdrop.classList.remove('open');
+            }
         }
 
-        // Init
         searchInput.addEventListener('input', (e) => renderList(e.target.value));
-        renderList();
+        
+        // Start Data Load
+        loadData();
 
     </script>
 </body>
