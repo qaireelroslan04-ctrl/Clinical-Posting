@@ -7,46 +7,51 @@
     <style>
         /* --- CSS VARIABLES --- */
         :root {
+            /* Dark Mode (Midnight) */
             --bg-body: #000000;
             --bg-sidebar: #050505;
             --bg-card: #0a0a0a;
             --bg-box: #111111;
             --bg-input: #171717;
-            --border-color: #1f2937;
+            --border-color: #27272a; /* Subtler dark border */
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --accent-color: #3b82f6;
             --accent-bg: #172554;
             --accent-text: #bfdbfe;
             --header-bg: rgba(0, 0, 0, 0.85);
+            --shadow-card: none;
             
-            /* Special Box Colors */
-            --box-green-bg: rgba(6, 78, 59, 0.25); --box-green-border: #059669; --box-green-text: #a7f3d0;
-            --box-blue-bg: rgba(30, 58, 138, 0.25); --box-blue-border: #2563eb; --box-blue-text: #bfdbfe;
-            --box-red-bg: rgba(127, 29, 29, 0.25); --box-red-border: #dc2626; --box-red-text: #fecaca;
-            --box-purple-bg: rgba(88, 28, 135, 0.25); --box-purple-border: #9333ea; --box-purple-text: #e9d5ff;
-            --box-yellow-bg: rgba(120, 53, 15, 0.25); --box-yellow-border: #d97706; --box-yellow-text: #fde68a;
+            /* Special Box Colors (Dark) */
+            --box-green-bg: rgba(6, 78, 59, 0.3); --box-green-border: #059669; --box-green-text: #d1fae5;
+            --box-blue-bg: rgba(30, 58, 138, 0.3); --box-blue-border: #2563eb; --box-blue-text: #dbeafe;
+            --box-red-bg: rgba(127, 29, 29, 0.3); --box-red-border: #dc2626; --box-red-text: #fee2e2;
+            --box-purple-bg: rgba(88, 28, 135, 0.3); --box-purple-border: #9333ea; --box-purple-text: #f3e8ff;
+            --box-yellow-bg: rgba(120, 53, 15, 0.3); --box-yellow-border: #d97706; --box-yellow-text: #fef3c7;
         }
 
         [data-theme="light"] {
-            --bg-body: #f8fafc;
+            /* Light Mode (Clinical White/Blue) */
+            --bg-body: #f0f4f8; /* Soft blue-grey tint */
             --bg-sidebar: #ffffff;
             --bg-card: #ffffff;
-            --bg-box: #f1f5f9;
+            --bg-box: #f8fafc;
             --bg-input: #f1f5f9;
             --border-color: #e2e8f0;
-            --text-main: #334155;
+            --text-main: #1e293b; /* Deep slate */
             --text-muted: #64748b;
-            --accent-color: #2563eb;
-            --accent-bg: #eff6ff;
-            --accent-text: #1e40af;
-            --header-bg: rgba(255, 255, 255, 0.9);
+            --accent-color: #0284c7; /* Clinical blue */
+            --accent-bg: #e0f2fe;
+            --accent-text: #0c4a6e;
+            --header-bg: rgba(255, 255, 255, 0.95);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 
-            --box-green-bg: #ecfdf5; --box-green-border: #10b981; --box-green-text: #065f46;
-            --box-blue-bg: #eff6ff; --box-blue-border: #3b82f6; --box-blue-text: #1e40af;
-            --box-red-bg: #fef2f2; --box-red-border: #ef4444; --box-red-text: #991b1b;
-            --box-purple-bg: #f5f3ff; --box-purple-border: #8b5cf6; --box-purple-text: #5b21b6;
-            --box-yellow-bg: #fffbeb; --box-yellow-border: #d97706; --box-yellow-text: #92400e;
+            /* Special Box Colors (Light - Softer) */
+            --box-green-bg: #f0fdf4; --box-green-border: #22c55e; --box-green-text: #14532d;
+            --box-blue-bg: #eff6ff; --box-blue-border: #3b82f6; --box-blue-text: #1e3a8a;
+            --box-red-bg: #fef2f2; --box-red-border: #ef4444; --box-red-text: #7f1d1d;
+            --box-purple-bg: #faf5ff; --box-purple-border: #a855f7; --box-purple-text: #581c87;
+            --box-yellow-bg: #fffbeb; --box-yellow-border: #f59e0b; --box-yellow-text: #78350f;
         }
 
         /* --- RESET & BASE --- */
@@ -219,38 +224,56 @@
 
         /* --- CONTENT CARD --- */
         .content-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 1rem; padding: 2rem; min-height: 500px;
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            border-radius: 1rem; padding: 2.5rem; min-height: 500px;
         }
         .tab-content { display: none; line-height: 1.8; color: var(--text-main); font-size: 1.05rem; }
         .tab-content.active { display: block; animation: fadeIn 0.3s; }
 
         /* Typography */
         h3 {
-            font-size: 1.3rem; color: var(--text-main); margin: 2.5rem 0 1.25rem 0;
+            font-size: 1.35rem; color: var(--text-main); margin: 2.5rem 0 1.25rem 0;
             font-weight: 800; border-left: 5px solid var(--accent-color); padding-left: 1rem;
-            letter-spacing: -0.01em;
+            letter-spacing: -0.01em; line-height: 1.3;
         }
         h3:first-child { margin-top: 0; }
-        p { margin-bottom: 1rem; }
-        ul { padding-left: 1.25rem; margin-bottom: 1.5rem; }
-        li { margin-bottom: 0.75rem; }
+        p { margin-bottom: 1.2rem; }
+        ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+        li { margin-bottom: 0.5rem; padding-left: 0.25rem; }
         strong { color: var(--text-main); font-weight: 700; }
         em { color: var(--text-muted); font-style: normal; font-weight: 600; font-size: 0.95em; }
 
         /* Special Boxes */
-        .box { padding: 1.5rem; border-radius: 0.75rem; margin-bottom: 2rem; border-left: 5px solid; background: var(--bg-box); }
+        .box { 
+            padding: 1.75rem; 
+            border-radius: 0.75rem; 
+            margin-bottom: 2rem; 
+            border-left: 4px solid; 
+            background: var(--bg-box);
+            /* Ensure text inside doesn't hit the border */
+        }
         .box-red { background: var(--box-red-bg); border-color: var(--box-red-border); color: var(--box-red-text); }
         .box-green { background: var(--box-green-bg); border-color: var(--box-green-border); color: var(--box-green-text); }
         .box-blue { background: var(--box-blue-bg); border-color: var(--box-blue-border); color: var(--box-blue-text); }
         .box-purple { background: var(--box-purple-bg); border-color: var(--box-purple-border); color: var(--box-purple-text); }
         .box-yellow { background: var(--box-yellow-bg); border-color: var(--box-yellow-border); color: var(--box-yellow-text); }
-        .box-title { display: block; font-weight: 900; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em; opacity: 0.9; }
+        
+        .box-title { 
+            display: block; 
+            font-weight: 800; 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            margin-bottom: 1rem; 
+            letter-spacing: 0.05em; 
+            opacity: 0.95; 
+        }
 
         /* Pearl Box */
         .pearl-box {
             background-color: var(--bg-box); border: 1px solid var(--box-purple-border);
-            border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem;
+            border-radius: 0.75rem; padding: 1.75rem; margin-bottom: 1.5rem;
             position: relative; overflow: hidden;
         }
         .pearl-box::before {
@@ -272,7 +295,7 @@
             aside.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .backdrop.open { display: block; }
             main { padding: 0 1rem 6rem 1rem; }
-            .content-card { padding: 0; border: none; background: transparent; }
+            .content-card { padding: 0; border: none; background: transparent; box-shadow: none; }
             .box, .pearl-box { padding: 1.25rem; }
             .tabs-wrapper { margin: 0 -1rem 1rem -1rem; padding-left: 1rem; padding-right: 1rem; }
         }
